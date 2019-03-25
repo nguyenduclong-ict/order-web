@@ -30,11 +30,7 @@ Types.phone = {
 }
 
 Types.image = {
-    type : {
-        type : String,
-        default : 'image',
-        required : true
-    }, 
+    filename :String, 
     path :  String
 }
 
