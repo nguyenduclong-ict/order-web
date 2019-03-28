@@ -9,15 +9,23 @@ router.get('/list', (req, res) => {
     })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/list/:from-:page', (req, res) => {
+    let from = req.params.from;
+    let page = req.params.page;
+    User.find({}, ['username', 'email', 'isBlock'], { skip : from, limit : page } , (err, docs) => {
+        res.status(200).json(docs);
+    })
+});
+
+router.get('/detail/:id', (req, res) => {
     console.log('get user by id : ' + req.params.id);
     let userId = req.params.id;
     User.findOne({
         _id: userId
     }, ['username', 'email', 'isBlock'], (err, docs) => {
         if (docs)
-            res.json(docs);
-        else res.json({
+            return res.status(200).json(docs);
+        else return res.json({
             error: "User khong ton tai"
         })
     })

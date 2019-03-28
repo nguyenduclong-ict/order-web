@@ -18,6 +18,7 @@ var schema = new Schema({
             message: props => `quantity must greater than 0!`   
         }
     },
+    provider_id : mongoose.Schema.Types.ObjectId,
     category_id : mongoose.Schema.Types.ObjectId,
     images : [Types.image]
 });

@@ -4,26 +4,33 @@ const bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-   startdate : {
-        type : Date, 
-        required : true
-   }, 
-   endDate : {
-    type : Date, 
-    required : true
-   }, 
-   status : {
-       type : Number ,
-       enum : [-1, 0 ,1],
-       default : [0]
-   }, 
-   value : {
-       type : Number,
-       required : () => {
+    startdate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
+    },
+    status: {
+        type: Number,
+        enum: [0, 1], // Chua su dung, da su dung
+        default: [0]
+    },
+    value: {
+        type: Number,
+        required: () => {
             return this.value > 0;
-       },
-       default : 0
-   }
+        },
+        default: 0
+    },
+    type: {
+        type: String,
+        enum: ['single', 'group'],
+        required: [true, 'type required!']
+    },
+    product_id: [mongoose.Schema.Types.ObjectId],
+    category_id: [mongoose.Schema.Types.ObjectId]
 });
 
 var Discount = mongoose.model('Discount', schema);

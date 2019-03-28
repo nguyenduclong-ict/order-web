@@ -14,7 +14,7 @@ Types.email = {
     type: String,
     trim: true,
     lowercase: true,
-    unique: true,
+    unique: [true , "Email must unique" ],
     validate: {
         validator: (v) => {
             let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/igm;

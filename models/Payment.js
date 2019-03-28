@@ -14,12 +14,12 @@ var schema = new Schema({
     }
 });
 
-var Discount = mongoose.model('Discount', schema);
-Discount.methods = {};
+var Payment = mongoose.model('Payment', schema);
+Payment.methods = {};
 
-Discount.methods.addDiscount = (Discount) => {
-    return new Discount(Discount).save();
+Payment.methods.addPayment = (Payment) => {
+    return new Payment(Payment).save();
 };
 
 // export module
-module.exports = Discount;
+module.exports = Payment;

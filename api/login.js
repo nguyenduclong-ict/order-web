@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
                     }
                     let token = jwt.sign(user, jwt_secret);
                     TokenStore.push(token);
-                    return res.json({
+                    return res.status(200).json({
                         result: true,
                         message: 'Đăng nhập thành công',
                         token : token
@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
                 }
                     
                 else
-                    return res.json({
+                    return res.status(200).json({
                         result: false,
                         message: 'Thông tin đăng nhập không chính xác!'
                     })
