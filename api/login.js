@@ -10,7 +10,10 @@ var TokenStore = require('../helpers/TokenStore');
 router.post('/', (req, res) => {
     let data = req.body;
     User.findOne({
-        email: data.email
+        $or: [
+            {email: data.email},
+            {username : data.username }
+        ]
     }, (err, result) => {
         if (err)
             return res.json({
@@ -29,7 +32,7 @@ router.post('/', (req, res) => {
             if (result.type !== data.type) return res.json({
                 result: false,
                 message: 'Tài khoản không hợp lệ!',
-                messdetail : 'Loại tài khoản không chính xác!'
+                messdetail: 'Loại tài khoản không chính xác!'
             });
             bcrypt.compare(data.password, result.password, (err, same) => {
                 if (err)
@@ -37,24 +40,21 @@ router.post('/', (req, res) => {
                         result: false,
                         message: 'Xảy ra lỗi'
                     })
-                if (same)
-                {
+                if (same) {
                     req.session.user = result;
                     let user = {
-                        usename : result.username,
-                        email : result.email,
-                        type : result.type
+                        usename: result.username,
+                        email: result.email,
+                        type: result.type
                     }
                     let token = jwt.sign(user, jwt_secret);
                     TokenStore.push(token);
                     return res.status(200).json({
                         result: true,
                         message: 'Đăng nhập thành công',
-                        token : token
+                        token: token
                     })
-                }
-                    
-                else
+                } else
                     return res.status(200).json({
                         result: false,
                         message: 'Thông tin đăng nhập không chính xác!'

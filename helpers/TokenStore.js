@@ -1,5 +1,4 @@
 
-
 var Store = [];
 var push = (token) => {
     Store.push(token);

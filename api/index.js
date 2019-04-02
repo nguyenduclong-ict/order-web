@@ -3,6 +3,7 @@ var router = express.Router();
 var auth = require('../helpers/Auth');
 // redirect router
 router.use('/login',  require('./login'));
+router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
 router.use('/provider', auth.authProvider, require('./provider/test'));
 router.use('/upload', require('./upload'));
