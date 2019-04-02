@@ -4,7 +4,7 @@ var User = require('../models/User');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var jwt_secret = process.env.JWT_SECRET || 'default';
-var TokenStore = require('../helpers/TokenStore');
+var TokenStore = require('../helpers/Token');
 
 // Đăng nhập nhà cung cấp
 router.post('/', (req, res) => {
@@ -47,7 +47,12 @@ router.post('/', (req, res) => {
                         email: result.email,
                         type: result.type
                     }
-                    let token = jwt.sign(user, jwt_secret);
+                    let data = {
+                        username : user.username,
+                        type : user.type,
+                        isBlock : user.isBlock
+                    }
+                    let token = jwt.sign(data, jwt_secret);
                     TokenStore.push(token);
                     return res.status(200).json({
                         result: true,

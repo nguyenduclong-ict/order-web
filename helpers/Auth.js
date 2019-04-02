@@ -10,6 +10,7 @@ function authCustomer(req, res, next) {
         if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
         var user = jwt.verify(token, jwt_secret);
         if(user.type != 'customer') return res.status(403).send('Truy cap bi tu choi');
+        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
         next();
     }) 
 }
@@ -23,6 +24,7 @@ function authProvider (req, res, next) {
         if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
         var user = jwt.verify(token, jwt_secret);
         if(user.type != 'provider') return res.status(403).send('Truy cap bi tu choi');
+        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
         next();
     }) 
 }
@@ -36,6 +38,7 @@ function authAdmin (req, res, next) {
         if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
         var user = jwt.verify(token, jwt_secret);
         if(user.type != 'admin') return res.status(403).send('Truy cap bi tu choi');
+        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
         next();
     }) 
 }
