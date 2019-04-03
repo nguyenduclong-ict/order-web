@@ -4,8 +4,8 @@ var User = require('../models/User');
 var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var jwt_secret = process.env.JWT_SECRET || 'default';
+var tokenExpires = process.env.TOKEN_EXPIRES || 3600;
 var TokenStore = require('../helpers/Token');
-
 // Đăng nhập nhà cung cấp
 router.post('/', (req, res) => {
     let data = req.body;
@@ -41,18 +41,13 @@ router.post('/', (req, res) => {
                         message: 'Xảy ra lỗi'
                     })
                 if (same) {
-                    req.session.user = result;
                     let user = {
                         usename: result.username,
                         email: result.email,
                         type: result.type
                     }
-                    let data = {
-                        username : user.username,
-                        type : user.type,
-                        isBlock : user.isBlock
-                    }
-                    let token = jwt.sign(data, jwt_secret);
+                    let token = jwt.sign( user , jwt_secret, { expiresIn: Number(tokenExpires) });
+
                     TokenStore.push(token);
                     return res.status(200).json({
                         result: true,

@@ -5,42 +5,141 @@ var Token = require('../helpers/Token');
 function authCustomer(req, res, next) {
     var token = req.headers.token;
     // Kiem tra token con hieu luc khong
-    if(!token || token === '') return res.status(403).send('Truy cap bi tu choi');
+    //
+    if (!token || token === '') return res.status(403).send('Truy cập bị từ chối');
     Token.find(token).then(doc => {
-        if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
-        var user = jwt.verify(token, jwt_secret);
-        if(user.type != 'customer') return res.status(403).send('Truy cap bi tu choi');
-        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
-        next();
-    }) 
+        if (!doc) return res.status(403).send('Truy cập bị từ chối');
+        jwt.verify(token, jwt_secret, (err, user) => {
+            let result;
+            if (err) {
+                switch (err.name) {
+                    case 'TokenExpiredError':
+                        result = {
+                            code: 403,
+                            message: "Token hết hạn"
+                        }
+                    default:
+                        result = {
+                            code: 403,
+                            message: "Truy cập bị từ chối"
+                        };
+                }
+            }
+            if (user.type != 'customer') {
+                result = {
+                    code: 430,
+                    message: 'Truy cập bị từ chối'
+                }
+            }
+            if (user.isBlock == true) {
+                result = {
+                    code: 430,
+                    message: 'Tài khoản đang bị khoá'
+                }
+            }
+            if (result !== '') {
+                Token.remove({
+                    value: token
+                }, (ok) => {
+                    return res.status(430).send(result);
+                });
+            }
+            next();
+        });
+    });
 }
 
-function authProvider (req, res, next) {
+function authProvider(req, res, next) {
     var token = req.headers.token;
     // Kiem tra token con hieu luc khong
     //
-    if(!token || token === '') return res.status(403).send('Truy cap bi tu choi2');
+    if (!token || token === '') return res.status(403).send('Truy cập bị từ chối');
     Token.find(token).then(doc => {
-        if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
-        var user = jwt.verify(token, jwt_secret);
-        if(user.type != 'provider') return res.status(403).send('Truy cap bi tu choi');
-        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
-        next();
-    }) 
+        if (!doc) return res.status(403).send('Truy cập bị từ chối');
+        jwt.verify(token, jwt_secret, (err, user) => {
+            let result;
+            if (err) {
+                switch (err.name) {
+                    case 'TokenExpiredError':
+                        result = {
+                            code: 403,
+                            message: "Token hết hạn"
+                        }
+                    default:
+                        result = {
+                            code: 403,
+                            message: "Truy cập bị từ chối"
+                        };
+                }
+            }
+            if (user.type != 'provider') {
+                result = {
+                    code: 430,
+                    message: 'Truy cập bị từ chối'
+                }
+            }
+            if (user.isBlock == true) {
+                result = {
+                    code: 430,
+                    message: 'Tài khoản đang bị khoá'
+                }
+            }
+            if (result) {
+                Token.remove(token).then(() => {
+                    return res.status(403).send(result);
+                })
+            }
+            next();
+        });
+    });
 }
 
-function authAdmin (req, res, next) {
+
+function authAdmin(req, res, next) {
     var token = req.headers.token;
     // Kiem tra token con hieu luc khong
     //
-    if(!token || token === '') return res.status(403).send('Truy cap bi tu choi');
+    if (!token || token === '') return res.status(403).send('Truy cập bị từ chối');
     Token.find(token).then(doc => {
-        if(!doc) return res.status(403).send('Truy cap bi tu choi'); 
-        var user = jwt.verify(token, jwt_secret);
-        if(user.type != 'admin') return res.status(403).send('Truy cap bi tu choi');
-        if(user.isBlock == true) return res.status(403).send('Tai khoan dang bi khoa');
-        next();
-    }) 
+        if (!doc) return res.status(403).send({ code : 430 , message : 'Truy cập bị từ chối'});
+        jwt.verify(token, jwt_secret, (err, user) => {
+            let result = undefined;
+            if (err) {
+                console.log(err);
+                switch (err.name) {
+                    case 'TokenExpiredError':
+                        result = {
+                            code: 403,
+                            message: "Token hết hạn"
+                        }
+                        break;
+                    default:
+                        result = {
+                            code: 403,
+                            message: "Truy cập bị từ chối"
+                        };
+                }
+            }
+            if (!result && user.type != 'admin') {
+                result = {
+                    code: 430,
+                    message: 'Truy cập bị từ chối'
+                }
+            }
+            if (!result && user.isBlock == true) {
+                result = {
+                    code: 430,
+                    message: 'Tài khoản đang bị khoá'
+                }
+            }
+            if (result) {
+                Token.remove(token).then(() => {
+                    return res.status(403).send(result);
+                })
+            } else 
+                next();
+        });
+    });
 }
 
 module.exports = {
