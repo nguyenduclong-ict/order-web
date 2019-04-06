@@ -4,7 +4,6 @@ var Types = require('../helpers/MyMongoose').Types;
 var Schema = mongoose.Schema;
 var schema = new Schema({
     name : String,
-    image : Types.image,
     parent_id : {
         type : mongoose.Schema.Types.ObjectId,
         default : null

@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use(bodyParser.json())
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 //
 app.get('/', (req, res) => {
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 // setup router api
-var apiRouter = require('./api/index');
+var apiRouter = require('./api/router');
 app.use('/api', apiRouter);
 
 // Error Handle

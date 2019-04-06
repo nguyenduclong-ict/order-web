@@ -1,15 +1,14 @@
 const express = require('express');
 var router = express.Router();
 var Product = require('../../models/Product');
-var Provider = require('../../models/Provider');
-
+const User = require('../../models/User');
 // Lay danh sach nha cung cap
 router.get('/provider/:from-:page', (req, res) => {
     let from = req.params.from;
     let page = req.params.page;
     let query = {};
 
-    Provider.find(query, { skip : from, limit : page } , (err, docs) => {
+    User.find(query, { skip : from, limit : page } , (err, docs) => {
         res.status(200).json(docs);
     })
 });

@@ -21,6 +21,15 @@ var storage = multer.diskStorage({
             cb(null, file.fieldname + '-' + Date.now() + '.' + MIME_TYPE_MAP[file.mimetype]);
     }
 });
+
+router.get('/', getFile);
+
+function getFile(req, res, next) {
+    //if(!req.header.token) return res.status(430).send('Fobbhien');
+    const path=require('path');
+    const filepath = 'D:/NUCE/Nam 4/Ky 2/Đồ án tổng hợp/Order/public/uploads/images/YURqRWZdcg.jpg';
+    return res.sendFile(filepath);
+}
 // Init upload
 var upload = multer({
     storage: storage
@@ -47,7 +56,7 @@ router.post('/images', upload.array('images', 10), (req, res, next) => {
             filepath: filepath
         });
     });
-    res.json(result)
+    res.json(result);
 });
 
 router.post('/image/delete/:filename', (req, res, next) => {

@@ -20,6 +20,12 @@ var schema = new Schema({
         type : Boolean, 
         default : true,
         required : true
+    }, 
+    info : {
+        name : String,
+        address : String,
+        phone : Number,
+        avatar : Types.image,
     }
 });
 
@@ -29,7 +35,17 @@ schema.pre('save', function (next) {
         console.log(hash);
         next();
     })
-})
+});
+
+schema.pre('updateOne', function (next) {
+    let update = this._update;
+    bcrypt.hash(update.$set.password, 10, (err, hash) => {
+        this._update.$set.password = hash;
+        console.log(hash);
+        next();
+    })
+});
+
 var User = mongoose.model('User', schema);
 User.methods = {};
 

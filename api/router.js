@@ -18,7 +18,8 @@ router.use('/admin/list', require('./admin/list'));
 
 // Router provider
 router.use('/provider/*', auth.authProvider);
-router.use('/admin/product', require('./provider/product'));
+router.use('/provider/product', require('./provider/product'));
 router.use('/provider/order', require('./provider/order'));
+router.use('/provider/provider', require('./provider/provider'));
 
 module.exports = router;

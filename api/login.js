@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
                 result: false,
                 message: 'Tài khoản hiện đang bị khóa!'
             });
-
+            console.log(result);
             // Kiểm tra loại tài khoản đăng nhập
             if (result.type !== data.type) return res.json({
                 result: false,
@@ -40,14 +40,12 @@ router.post('/', (req, res) => {
                         result: false,
                         message: 'Xảy ra lỗi'
                     })
+                console.log(same);
                 if (same) {
-                    let user = {
-                        usename: result.username,
-                        email: result.email,
-                        type: result.type
+                    let payload = {
+                        id : result._id
                     }
-                    let token = jwt.sign( user , jwt_secret, { expiresIn: Number(tokenExpires) });
-
+                    let token = jwt.sign( payload , jwt_secret, { expiresIn: Number(tokenExpires) });
                     TokenStore.push(token);
                     return res.status(200).json({
                         result: true,

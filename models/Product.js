@@ -19,8 +19,11 @@ var schema = new Schema({
         }
     },
     provider_id : mongoose.Schema.Types.ObjectId,
-    category_id : mongoose.Schema.Types.ObjectId,
-    images : [Types.image]
+    category_id : mongoose.Schema.Types.ObjectId,   
+    bought : {
+        type : Number,
+        default : 0
+    }
 });
 
 var Product = mongoose.model('Product', schema);
