@@ -2,10 +2,10 @@ const mongoose = require('../helpers/MyMongoose').mongoose;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    user_id : mongoose.Schema.Types.ObjectId,
-    path : String,
-    type : String,
-    isPublic : Boolean,
+    owner : mongoose.Schema.Types.ObjectId, // User id
+    filename : String,
+    type : String, // Loai file
+    isPublic : Boolean, // Co phai public khong
     created : Date
 });
 

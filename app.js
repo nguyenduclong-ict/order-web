@@ -1,6 +1,10 @@
 const express = require('express');
 require('dotenv').config();
 const app = express();
+const path = require('path');
+// 
+process.env.IMAGE_PATH = path.join(__dirname, 'upload/image');
+
 
 // Disable console.log
 if(process.env.EVIRONMENT != 'DEV')

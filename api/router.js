@@ -7,7 +7,8 @@ router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
 router.use('/provider', auth.authProvider, require('./provider/test'));
 router.use('/upload', require('./upload'));
-
+router.use('/file', auth.authFile, require('./file'));
+router.use('/user', auth.authFile, require('./user'));
 // Router admin
 router.use('/admin/*', auth.authAdmin);
 router.use('/admin/user',  require('./admin/user'));

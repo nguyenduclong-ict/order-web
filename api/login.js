@@ -6,8 +6,12 @@ var jwt = require('jsonwebtoken');
 var jwt_secret = process.env.JWT_SECRET || 'default';
 var tokenExpires = process.env.TOKEN_EXPIRES || 3600;
 var TokenStore = require('../helpers/Token');
-// Đăng nhập nhà cung cấp
-router.post('/', (req, res) => {
+
+
+router.post('/', postLogin);
+
+
+async function postLogin (req ,res) {
     let data = req.body;
     User.findOne({
         $or: [
@@ -34,7 +38,7 @@ router.post('/', (req, res) => {
                 message: 'Tài khoản không hợp lệ!',
                 messdetail: 'Loại tài khoản không chính xác!'
             });
-            bcrypt.compare(data.password, result.password, (err, same) => {
+            bcrypt.compare(data.password, result.password, async (err, same) => {
                 if (err)
                     return res.json({
                         result: false,
@@ -45,13 +49,22 @@ router.post('/', (req, res) => {
                     let payload = {
                         id : result._id
                     }
-                    let token = jwt.sign( payload , jwt_secret, { expiresIn: Number(tokenExpires) });
-                    TokenStore.push(token);
-                    return res.status(200).json({
-                        result: true,
-                        message: 'Đăng nhập thành công',
-                        token: token
-                    })
+                    console.log(payload);
+                    let token = jwt.sign( payload , jwt_secret);//, { expiresIn: Number(tokenExpires) });
+                    try {
+                        let r = await TokenStore.push(token);
+                        return res.status(200).json({
+                            result: true,
+                            message: 'Đăng nhập thành công',
+                            token: token,
+                            imageCode : r._id
+                        })
+                    } catch (error) {
+                        return res.status(200).json({
+                            result: false,
+                            message: 'Đăng nhập thất bại'
+                        })
+                    }
                 } else
                     return res.status(200).json({
                         result: false,
@@ -64,7 +77,6 @@ router.post('/', (req, res) => {
                 message: 'Thông tin đăng nhập không chính xác!'
             })
     })
-})
-
+}
 
 module.exports = router;

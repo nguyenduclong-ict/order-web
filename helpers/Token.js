@@ -19,9 +19,12 @@ function remove(token) {
     }
     return Token.deleteOne(data);
 }
-
+function findById(id) {
+    return Token.findById(id);
+}
 module.exports = {
     find,
     push,
-    remove
+    remove,
+    findById
 }

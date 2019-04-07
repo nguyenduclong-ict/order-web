@@ -11,7 +11,7 @@ const MIME_TYPE_MAP = {
 // Storage 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/images')
+        cb(null, 'upload/images')
     },
     filename: (req, file, cb) => {
         console.log(file, Array.isArray(file));
@@ -22,14 +22,6 @@ var storage = multer.diskStorage({
     }
 });
 
-router.get('/', getFile);
-
-function getFile(req, res, next) {
-    //if(!req.header.token) return res.status(430).send('Fobbhien');
-    const path=require('path');
-    const filepath = 'D:/NUCE/Nam 4/Ky 2/Đồ án tổng hợp/Order/public/uploads/images/YURqRWZdcg.jpg';
-    return res.sendFile(filepath);
-}
 // Init upload
 var upload = multer({
     storage: storage
