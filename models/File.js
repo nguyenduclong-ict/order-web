@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
     owner : mongoose.Schema.Types.ObjectId, // User id
     filename : String,
+    path : String,
     type : String, // Loai file
     isPublic : Boolean, // Co phai public khong
     created : Date

@@ -2,6 +2,9 @@ const express = require('express');
 var router = express.Router();
 var multer = require('multer')
 var fs = require('fs');
+const File = require('../models/File');
+const imageRootPath = process.env.IMAGE_ROOT_PATH;
+const path = require('path');
 
 const MIME_TYPE_MAP = {
     'image/png': 'png',
@@ -11,7 +14,7 @@ const MIME_TYPE_MAP = {
 // Storage 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'upload/images')
+        cb(null, imageRootPath)
     },
     filename: (req, file, cb) => {
         console.log(file, Array.isArray(file));
@@ -28,28 +31,57 @@ var upload = multer({
 });
 
 // Upload single file
-router.post('/image', upload.single('image'), (req, res, next) => {
+router.post('/image', upload.single('image'), uploadSingleImage);
+
+async function uploadSingleImage(req, res, next) {
     let filename = req.file.filename;
-    let filepath = req.file.destination.substring(6);
-    res.json({
+    let filepath = path.join(imageRootPath , filename);
+    console.log(filepath);
+    console.log(req.body);
+    let obj = {
+        owner: req.body.owner,
         filename: filename,
-        filepath: filepath
-    });
-});
+        path: filepath,
+        type: 'image',
+        isPublic: req.body.isPublic
+    }
+
+    let file = new File(obj);
+    try {
+        let result = await file.save();
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Upload thất bại');
+    }
+};
 // Upload multiple file
 
-router.post('/images', upload.array('images', 10), (req, res, next) => {
+router.post('/images', upload.array('images', 10), uploadMultipleImage);
+async function uploadMultipleImage(req, res, next) {
     let result = []
-    req.files.forEach(element => {
-        let filename = element.filename;
-        let filepath = element.destination.substring(6);
-        result.push({
-            filename: filename,
-            filepath: filepath
+    try {
+        req.files.forEach(async element => {
+            let filename = element.filename;
+            let filepath = imageRootPath + '/' + filename;
+            let obj = {
+                owner: req.body.owner,
+                filename: filename,
+                path: filepath,
+                type: 'image',
+                public: req.body.isPublic
+            }
+
+            let file = new File(obj);
+            let rs = await file.save();
+            result.push(rs);
         });
-    });
+    } catch (error) {
+        res.status(500).send('Upload that bai');
+    }
     res.json(result);
-});
+    
+};
 
 router.post('/image/delete/:filename', (req, res, next) => {
     let filename = req.params.filename;
@@ -62,7 +94,9 @@ router.post('/image/delete/:filename', (req, res, next) => {
                 message: err.message
             });
         } else
-            return res.json({message : "File deleted!"})
+            return res.json({
+                message: "File deleted!"
+            })
     })
 });
 

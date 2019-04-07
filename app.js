@@ -3,7 +3,7 @@ require('dotenv').config();
 const app = express();
 const path = require('path');
 // 
-process.env.IMAGE_PATH = path.join(__dirname, 'upload/image');
+process.env.IMAGE_ROOT_PATH = path.join(__dirname, 'upload/images');
 
 
 // Disable console.log

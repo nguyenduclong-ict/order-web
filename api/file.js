@@ -1,7 +1,7 @@
 const express = require('express');
 var router = express.Router();
 var File = require('../models/File');
-const imagePath = process.env.IMAGE_PATH;
+const NError = require('../helpers/Error');
 router.get('/image/', getImage);
 
 async function getImage(req, res) {
@@ -17,14 +17,12 @@ async function getImage(req, res) {
             error.code = 404;
             throw error;
         }
-        if (!file.isPublic) {
-            if(file.owner != user._id) {
-                let error = new Error("Khong co quyen truy cap file");
-                error.code = 403;
-                throw error;
-            }
+        console.log(user);
+        console.log(file);
+        if (!file.isPublic && !user._id.equals(file.owner)) {
+            throw new NError("Khong co quyen truy cap file", 403);
         } else {
-            return res.sendFile(imagePath + '/' + filename);
+            return res.sendFile(file.path);
         }
     } catch (error) {
         return res.status(error.code).send(error.message);
