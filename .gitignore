@@ -63,4 +63,7 @@ typings/
 
 # next.js build output
 .next
+
+# upload folder
+upload/
 >>>>>>> 5e233ace9433f6b59774adaa66709911d2bd8e15

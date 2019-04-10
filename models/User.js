@@ -25,13 +25,19 @@ var schema = new Schema({
         name : String,
         address : String,
         phone : Number,
-        avatar : Types.image,
+        avatar : [String]
     }
 });
 
 schema.pre('save', function (next) {
     bcrypt.hash(this.password, 10, (err, hash) => {
         this.password = hash;
+        if(!this.info) this.info = {
+            name : '',
+            address : '',
+            phone : '',
+            avatar : []
+        }
         console.log(hash);
         next();
     })

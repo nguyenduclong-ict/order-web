@@ -3,6 +3,8 @@ var jwt_secret = process.env.JWT_SECRET || 'default';
 var Token = require('../helpers/Token');
 var User = require('../models/User');
 const NError = require('../helpers/Error');
+const File = require('../models/File');
+
 // Kiem tra token , lay thong tin trong token
 async function checkToken(token) {
     token = await Token.find(token);
@@ -36,6 +38,7 @@ async function authAdmin(req, res, next) {
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
             if (user.type !== 'admin') throw new Error("Loại tài khoản không đúng");
+            req.user = user;
             return next();
         }).catch(error => {
             return res.status(403).send(error.message);
@@ -69,7 +72,14 @@ async function authCustomer(req, res, next) {
 }
 
 async function authFile(req, res, next) {
+    let filename = req.query.filename;
+    let file = await File.findOne({
+        filename: filename  
+    });
+    req.data.file = file;
+    if (file.isPublic == true) return next();
     let tokenId = req.query.code;
+    // Kiem tra dang nhap
     checkTokenById(tokenId)
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
@@ -87,7 +97,7 @@ async function getInfoFromToken(req, res, next) {
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
-            user.password = undefined;
+            // user.password = undefined;
             req.user = user;
             return next();
         }).catch(error => {

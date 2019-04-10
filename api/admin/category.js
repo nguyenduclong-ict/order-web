@@ -2,6 +2,7 @@
 const express = require('express');
 var router = express.Router();
 var Category = require('../../models/Category');
+var File = require('../../models/File');
 
 router.get('/list/:from-:page', (req, res) => {
     let from = req.params.from;
@@ -28,10 +29,14 @@ router.get('/detail/:id', (req, res) => {
 // Add Category
 router.post('/add', (req, res) => {
     let data = req.body;
+    let imageId = req.body.imageId;
     console.log(data);
     let category = new Category(data);
     category.save()
         .then((doc) => {
+            if(imageId) {
+                File.updateOne({_id : imageId}, {$push : {subOnwer : doc._id}} );
+            }
             return res.json({message : "Add Category success", data : doc})
         })
         .catch((err) => {

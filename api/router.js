@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 var router = express.Router();
 var auth = require('../helpers/Auth');
@@ -5,7 +7,6 @@ var auth = require('../helpers/Auth');
 router.use('/login',  require('./login'));
 router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
-router.use('/provider', auth.authProvider, require('./provider/test'));
 router.use('/upload', require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
 router.use('/user', auth.getInfoFromToken, require('./user'));
@@ -21,6 +22,5 @@ router.use('/admin/list', require('./admin/list'));
 router.use('/provider/*', auth.authProvider);
 router.use('/provider/product', require('./provider/product'));
 router.use('/provider/order', require('./provider/order'));
-router.use('/provider/provider', require('./provider/provider'));
 
 module.exports = router;

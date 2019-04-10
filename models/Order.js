@@ -4,20 +4,20 @@ const bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    product_id: {
+    productId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    payment_id: mongoose.Schema.Types.ObjectId,
-    customer_id : {
+    paymentId: mongoose.Schema.Types.ObjectId,
+    customerId : {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    provider_id : {
+    providerId : {
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    discount_id: [mongoose.Schema.Types.ObjectId],
+    discountId: [mongoose.Schema.Types.ObjectId],
     quantity: {
         type: Number,
         default: 1,
@@ -31,6 +31,7 @@ var schema = new Schema({
     },
     status: [{
         code: {
+            
             type: Number,
             enum: [-1,0, 1, 2, 3, 4],
             default : 0

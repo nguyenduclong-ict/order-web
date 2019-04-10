@@ -3,24 +3,15 @@ var Types = require('../helpers/MyMongoose').Types;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
+    providerId : mongoose.Schema.Types.ObjectId,
+    categoryId : mongoose.Schema.Types.ObjectId,   
     name : String,
     description : String,
     sale : Boolean,
     saleValue : Number,
-    quantity : {
-        type : Number,
-        default : 0,
-        required : true,
-        validate : {
-           validator :  v => {
-            return v >= 0 ? true : false
-            },
-            message: props => `quantity must greater than 0!`   
-        }
-    },
-    provider_id : mongoose.Schema.Types.ObjectId,
-    category_id : mongoose.Schema.Types.ObjectId,   
-    bought : {
+    maxSold : Number,
+    soldAble : Boolean,
+    soldCount : {
         type : Number,
         default : 0
     }

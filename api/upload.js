@@ -32,18 +32,21 @@ var upload = multer({
 
 // Upload single file
 router.post('/image', upload.single('image'), uploadSingleImage);
+router.post('/images', upload.array('images', 10), uploadMultipleImage);
 
 async function uploadSingleImage(req, res, next) {
     let filename = req.file.filename;
-    let filepath = path.join(imageRootPath , filename);
+    let filepath = path.join(imageRootPath, filename);
     console.log(filepath);
     console.log(req.body);
     let obj = {
         owner: req.body.owner,
+        subOwner: req.body.subOwner,
         filename: filename,
         path: filepath,
         type: 'image',
-        isPublic: req.body.isPublic
+        isPublic: req.body.isPublic,
+        of: req.body.of
     }
 
     let file = new File(obj);
@@ -57,19 +60,19 @@ async function uploadSingleImage(req, res, next) {
 };
 // Upload multiple file
 
-router.post('/images', upload.array('images', 10), uploadMultipleImage);
 async function uploadMultipleImage(req, res, next) {
     let result = []
     try {
         req.files.forEach(async element => {
             let filename = element.filename;
-            let filepath = imageRootPath + '/' + filename;
+            let filepath = path.join(imageRootPath, filename);
             let obj = {
                 owner: req.body.owner,
                 filename: filename,
                 path: filepath,
                 type: 'image',
-                public: req.body.isPublic
+                public: req.body.isPublic,
+                of: req.body.of
             }
 
             let file = new File(obj);
@@ -80,24 +83,7 @@ async function uploadMultipleImage(req, res, next) {
         res.status(500).send('Upload that bai');
     }
     res.json(result);
-    
-};
 
-router.post('/image/delete/:filename', (req, res, next) => {
-    let filename = req.params.filename;
-    let directory = 'public/uploads/images/';
-    fs.unlink(directory + filename, (err) => {
-        if (err) {
-            console.log(err);
-            return res.json({
-                error: true,
-                message: err.message
-            });
-        } else
-            return res.json({
-                message: "File deleted!"
-            })
-    })
-});
+};
 
 module.exports = router;
