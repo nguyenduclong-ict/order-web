@@ -1,42 +1,41 @@
 const mongoose = require('../helpers/MyMongoose').mongoose;
-var Types = require('../helpers/MyMongoose').Types;
+const Types = require('../helpers/MyMongoose').Types;
 const bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    username : {
-        type : String,
-        required : [true, 'Username not empty?'],
-        unique : [true , "Username must unique"]
+    username: {
+        type: String,
+        required: [true, 'Username not empty?'],
+        unique: [true, "Username must unique"]
     },
-    password : Types.password,
-    email : Types.email,
-    type : {
-        type : String,
-        enum : ['admin', 'provider', 'customer'],
-        required : true
+    password: Types.password,
+    email: Types.email,
+    type: {
+        type: String,
+        enum: ['admin', 'provider', 'customer'],
+        required: true
     },
-    isBlock : {
-        type : Boolean, 
-        default : true,
-        required : true
-    }, 
-    info : {
-        name : String,
-        address : String,
-        phone : Number,
-        avatar : [String]
+    isBlock: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
+    info: {
+        name: String,
+        address: String,
+        phone: Number
     }
 });
 
 schema.pre('save', function (next) {
     bcrypt.hash(this.password, 10, (err, hash) => {
         this.password = hash;
-        if(!this.info) this.info = {
-            name : '',
-            address : '',
-            phone : '',
-            avatar : []
+        if (!this.info) this.info = {
+            name: '',
+            address: '',
+            phone: '',
+            avatar: []
         }
         console.log(hash);
         next();
@@ -55,9 +54,109 @@ schema.pre('updateOne', function (next) {
 var User = mongoose.model('User', schema);
 User.methods = {};
 
-User.methods.addUser = (user) => {
-    return new User(user).save();
-};
+User.methods.getUser = async function (username) {
+    return User.aggregate(
+        [{
+                $lookup: {
+                    from: "files",
+                    localField: '_id',
+                    foreignField: "owner",
+                    as: "avatar"
+                }
+            },
+            {
+                $match: {
+                    "username": username,
+                    "type": "provider"
+                }
+            },
+            {
+                $project: {
+                    username: 1,
+                    isBlock: 1,
+                    email: 1,
+                    type: 1,
+                    info: {
+                        name: 1,
+                        address: 1,
+                        phone: 1,
+                        avatar: {
+                            $filter: {
+                                input: "$avatar",
+                                as: "item",
+                                cond: {
+                                    $and: [{
+                                            $gte: [{
+                                                $indexOfArray: ["$$item.of", "user"]
+                                            }, 0]
+                                        },
+                                        {
+                                            $gte: [{
+                                                $indexOfArray: ["$$item.of", "avatar"]
+                                            }, 0]
+                                        }
+                                    ]
+                                }
+                            },
+                        }
+                    }
 
+                }
+            }
+        ]);
+}
+
+
+User.methods.getListUser = async function (type, from, page) {
+    let match = type === 'all' ? {} : { "type" : type};
+    return User.aggregate(
+            [{
+                    $lookup: {
+                        from: "files",
+                        localField: '_id',
+                        foreignField: "owner",
+                        as: "avatar"
+                    }
+                },
+                {
+                    $match: match
+                },
+                {
+                    $project: {
+                        username: 1,
+                        isBlock: 1,
+                        email: 1,
+                        type: 1,
+                        info: {
+                            name: 1,
+                            address: 1,
+                            phone: 1,
+                            avatar: {
+                                $filter: {
+                                    input: "$avatar",
+                                    as: "item",
+                                    cond: {
+                                        $and: [{
+                                                $gte: [{
+                                                    $indexOfArray: ["$$item.of", "user"]
+                                                }, 0]
+                                            },
+                                            {
+                                                $gte: [{
+                                                    $indexOfArray: ["$$item.of", "avatar"]
+                                                }, 0]
+                                            }
+                                        ]
+                                    }
+                                },
+                            }
+                        }
+
+                    }
+                }
+            ])
+        .skip(from)
+        .limit(page);
+}
 // export module
 module.exports = User;

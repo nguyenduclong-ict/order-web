@@ -40,7 +40,7 @@ async function uploadSingleImage(req, res, next) {
     console.log(filepath);
     console.log(req.body);
     let obj = {
-        owner: req.body.owner,
+        owner: req.user._id,
         subOwner: req.body.subOwner,
         filename: filename,
         path: filepath,
@@ -58,8 +58,8 @@ async function uploadSingleImage(req, res, next) {
         res.status(500).send('Upload thất bại');
     }
 };
-// Upload multiple file
 
+// Upload multiple file
 async function uploadMultipleImage(req, res, next) {
     let result = []
     try {

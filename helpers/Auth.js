@@ -15,6 +15,23 @@ async function checkToken(token) {
     return tokenData;
 }
 
+async function getTokenFromHeaders(headers) {
+    try {
+
+        let authorization = headers.authorization;
+        let token = authorization.split(" ")[1];
+        console.log(token);
+        if (!token) throw new NError("Không có token trên header", 403);
+        else {
+            return token;
+        }
+    } catch(error) {
+        console.log(error);
+        if (error.code) return error;
+        else return new Error('Not found token on headers');
+    }
+}
+
 // 
 async function checkTokenById(tokenId) {
     token = await Token.findById(tokenId);
@@ -28,12 +45,13 @@ async function checkTokenById(tokenId) {
 async function checkUser(userId) {
     // Lay thong tin user
     let user = await User.findById(userId);
-    if (!user) throw new NError("Không tồn tại tài khoản người dùng");
+    if (!user) throw new NError("Không tồn tại tài khoản người dùng của token này");
     return user;
 }
 
 async function authAdmin(req, res, next) {
-    checkToken(req.headers.token)
+    getTokenFromHeaders(req.headers)
+        .then(token => checkToken(token))
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
@@ -46,7 +64,8 @@ async function authAdmin(req, res, next) {
 }
 
 async function authProvider(req, res, next) {
-    checkToken(req.headers.token)
+    getTokenFromHeaders(req.headers)
+        .then(token => checkToken(token))
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
@@ -59,7 +78,8 @@ async function authProvider(req, res, next) {
 }
 
 async function authCustomer(req, res, next) {
-    checkToken(req.headers.token)
+    getTokenFromHeaders(req.headers)
+        .then(token => checkToken(token))
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
@@ -74,7 +94,7 @@ async function authCustomer(req, res, next) {
 async function authFile(req, res, next) {
     let filename = req.query.filename;
     let file = await File.findOne({
-        filename: filename  
+        filename: filename
     });
     req.data.file = file;
     if (file.isPublic == true) return next();
@@ -93,14 +113,15 @@ async function authFile(req, res, next) {
 }
 
 async function getInfoFromToken(req, res, next) {
-    checkToken(req.headers.token)
+    getTokenFromHeaders(req.headers)
+        .then(token => checkToken(token))
         .then(tokenData => checkUser(tokenData.id))
         .then(user => {
             if (user.isBlock) throw new Error("Tài khoản đang bị khoá");
-            // user.password = undefined;
             req.user = user;
             return next();
         }).catch(error => {
+            console.log(error);
             return res.status(403).send(error.message);
         });
 }

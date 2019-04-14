@@ -9,7 +9,8 @@ router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
 router.use('/upload', require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
-router.use('/user', auth.getInfoFromToken, require('./user'));
+router.use('/token', auth.getInfoFromToken, require('./token'));
+router.use('/test', require('./test'));
 // Router admin
 router.use('/admin/*', auth.authAdmin);
 router.use('/admin/user',  require('./admin/user'));

@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 router.get('/info', getInfo);
 router.post('/edit', postEdit);
 router.post('/change-password', postChangePassword);
-
+router.get('/status', getTokenStatus);
 
 async function getInfo (req, res) {
     let user = req.user;
@@ -59,4 +59,9 @@ async function postChangePassword(req, res) {
         return res.status(500).send({ error: true, message: "Xảy ra lỗi, vui lòng thử lại sau!" });
     }
 }
+
+async function getTokenStatus(req, res) {
+    return res.json(200).send('live');
+}
+
 module.exports = router;

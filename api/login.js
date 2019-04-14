@@ -50,7 +50,7 @@ async function postLogin (req ,res) {
                         id : result._id
                     }
                     console.log(payload);
-                    let token = jwt.sign( payload , jwt_secret);//, { expiresIn: Number(tokenExpires) });
+                    let token = jwt.sign( payload , jwt_secret, { expiresIn: tokenExpires });
                     try {
                         let r = await TokenStore.push(token);
                         return res.status(200).json({

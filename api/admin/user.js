@@ -2,58 +2,46 @@
 const express = require('express');
 var router = express.Router();
 var User = require('../../models/User');
-const File = require('../../models/File')
 
-router.get('/list', (req, res) => {
-    User.find({}, ['_id', 'username', 'email', 'isBlock'], (err, docs) => {
-        res.json(docs);
-    })
-});
-
-router.get('/list/:from-:page', getListUserPage);
+router.get('/list/:type-:from-:page', getListUserPage);
 
 async function getListUserPage(req, res) {
-    let from = Number(req.params.from);
-    let page = Number(req.params.page);
-    console.log(from, page);
-    User.find()
-    .skip(from)
-    .limit(page)
-    .select(['_id', 'username', 'email', 'isBlock'])
-    .then(docs => {
-        res.json(docs);        
-    }) 
+    let type = req.param('type');
+    let from = Number(req.param('from'));
+    let page = Number(req.param('page'));
+    console.log(type,from,page);
+    User.methods.getListUser(type, from, page)
+        .then(list => {
+            list = list.map(e => e);
+            console.log(list);
+            return res.json(list);
+        })
+        .catch(error => {
+            console.log(error);
+            return res.status(500);
+        })
 }
 
-router.get('/detail/:id', getDetailUserById );
+router.get('/detail/:username', getUserByUsername );
 
-async function getDetailUserById (req, res) {
-    let user = await User.findOne({_id : req.params.id})
-    console.log(user);
-    File.find({owner : user._id , type : 'image',  of : 'user/avatar'})
-    .exec()
-    .then(images => {
-        console.log(images);
-        images = images.map(e => e.filename);
-        user.info.avatar = images;
-        user.password = undefined;
-        return res.json(user);
-    })
-    .catch(error => {
-        console.log(error);
-        return res.json(user);
-    });
+async function getUserByUsername (req, res) {
+    let username = req.params.username;
+    try {
+        let user = await User.methods.getUser(username);
+        console.log(user);
+        return res.json(user[0]);
+    } catch (error) {
+        return res.status(500).send("Xay ra loi trong Server");
+    }
+    
 };
 
-// Edit user
-router.post('/edit/:id', (req, res) => {
+// Block user
+router.post('/block/:id', (req, res) => {
     let query = {
         _id: req.params.id
     };
-    let data = req.body;
-    console.log(data);
-
-    User.updateOne(query, data, (err) => {
+    User.updateOne(query, {$set : {isBlock : true}}, (err) => {
         if (err) {
             console.log(err);
             return res.json({
@@ -61,11 +49,35 @@ router.post('/edit/:id', (req, res) => {
                 message: err.message
             });
         } else {
-            console.log('Update user ' + req.params.id + 'success!');
+            console.log('Block user ' + req.params.id + 'success!');
             return res.json({
-                message: 'update success!'
+                message: 'Block success!'
             });
         }
     });
-})
+});
+
+
+// UnBlock user
+router.post('/unblock/:id', (req, res) => {
+    let query = {
+        _id: req.params.id
+    };
+    User.updateOne(query, {$set : {isBlock : false}}, (err) => {
+        if (err) {
+            console.log(err);
+            return res.json({
+                error: "Xay ra loi",
+                message: err.message
+            });
+        } else {
+            console.log('UnBlock user ' + req.params.id + 'success!');
+            return res.json({
+                message: 'unBlock success!'
+            });
+        }
+    });
+});
+
+
 module.exports = router;
