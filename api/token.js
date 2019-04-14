@@ -5,7 +5,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
 router.get('/info', getInfo);
-router.post('/edit', postEdit);
+router.post('/edit', postEditInfo);
 router.post('/change-password', postChangePassword);
 router.get('/status', getTokenStatus);
 
@@ -27,11 +27,15 @@ async function getInfo (req, res) {
     });
 };
 
-async function postEdit(req, res) {
+async function postEditInfo(req, res) {
     let user = req.user;    
-    let data = req.body;
+    let info = {
+        name : req.body.name,
+        address : req.body.address,
+        phone : req.body.phone
+    }
     console.log(data);
-    User.updateOne({_id : user._id}, {$set : {info  : data.info}})
+    User.updateOne({_id : user._id}, {$set : {info  : info}})
     .exec() 
     .then(result=> {
         console.log('Update User ', user.username, result);
