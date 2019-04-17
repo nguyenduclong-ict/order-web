@@ -24,4 +24,7 @@ router.use('/provider/*', auth.authProvider);
 router.use('/provider/product', require('./provider/product'));
 router.use('/provider/order', require('./provider/order'));
 
+// Router customer
+router.use('/customer/product', require('./customer/product'));
+
 module.exports = router;
