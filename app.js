@@ -44,7 +44,7 @@ app.use(express.static('public'));
 
 //
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'app/index.html'));
+  res.send('API for foody');
   //console.log(req.session);
 });
 

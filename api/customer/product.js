@@ -7,7 +7,7 @@ router.get('/list/:from-:page-:category', getListProduct);
 
 async function getListProduct(req, res) {
     let {from , page, category} = req.params;
-    query = {};
+    console.log(from, page, category);
 
     Product.methods.getList('all', category, from, page)
         .then(data => {
