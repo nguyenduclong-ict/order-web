@@ -50,8 +50,8 @@ schema.pre('updateOne', function (next) {
         next();
     })
 });
-
-var User = mongoose.model('User', schema);
+var User = {};
+User = mongoose.model('User', schema);
 User.methods = {};
 
 User.methods.getUser = async function (username) {
@@ -87,13 +87,16 @@ User.methods.getUser = async function (username) {
                                 cond: {
                                     $and: [{
                                             $gte: [{
-                                                $indexOfArray: ["$$item.of", "user"]
+                                                $indexOfArray: ["$$item.tags", "user"]
                                             }, 0]
                                         },
                                         {
                                             $gte: [{
-                                                $indexOfArray: ["$$item.of", "avatar"]
+                                                $indexOfArray: ["$$item.tags", "avatar"]
                                             }, 0]
+                                        },
+                                        {
+                                            $eq : ["$$item.type", "image"]
                                         }
                                     ]
                                 }
@@ -138,13 +141,16 @@ User.methods.getListUser = async function (type, from, page) {
                                     cond: {
                                         $and: [{
                                                 $gte: [{
-                                                    $indexOfArray: ["$$item.of", "user"]
+                                                    $indexOfArray: ["$$item.tags", "user"]
                                                 }, 0]
                                             },
                                             {
                                                 $gte: [{
-                                                    $indexOfArray: ["$$item.of", "avatar"]
+                                                    $indexOfArray: ["$$item.tags", "avatar"]
                                                 }, 0]
+                                            },
+                                            {
+                                                $eq : ["$$item.type", "image"]
                                             }
                                         ]
                                     }

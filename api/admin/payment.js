@@ -4,11 +4,15 @@ var router = express.Router();
 var Payment = require('../../models/Payment');
 
 router.get('/list/:from-:page', (req, res) => {
-    let from = req.params.from;
-    let page = req.params.page;
-    Payment.find({}, {skip : from, limit : page}, (err, docs) => {
-        res.staus(200).json(docs);
-    })
+    let from = Number(req.params.from);
+    let page = Number(req.params.page);
+    Payment.find()
+        .skip(from)
+        .limit(page)
+        .lean()
+        .then(docs => {
+            return res.json(docs);
+        })
 });
 
 router.get('/detail/:id', (req, res) => {
@@ -29,8 +33,8 @@ router.get('/detail/:id', (req, res) => {
 router.post('/add', (req, res) => {
     let data = req.body;
     console.log(data);
-    let Payment = new Payment(data);
-    Payment.save()
+    let newPayment = new Payment(data);
+    newPayment.save()
         .then((doc) => {
             return res.json({message : "Add Payment success", data : doc})
         })

@@ -4,6 +4,9 @@ var router = express.Router();
 var User = require('../../models/User');
 
 router.get('/list/:type-:from-:page', getListUserPage);
+router.get('/detail/:username', getUserByUsername );
+router.post('/block/:id', postBlock);
+router.post('/unblock/:id', postUnBlock);
 
 async function getListUserPage(req, res) {
     let type = req.param('type');
@@ -22,7 +25,6 @@ async function getListUserPage(req, res) {
         })
 }
 
-router.get('/detail/:username', getUserByUsername );
 
 async function getUserByUsername (req, res) {
     let username = req.params.username;
@@ -37,7 +39,7 @@ async function getUserByUsername (req, res) {
 };
 
 // Block user
-router.post('/block/:id', (req, res) => {
+function postBlock (req, res)  {
     let query = {
         _id: req.params.id
     };
@@ -55,14 +57,16 @@ router.post('/block/:id', (req, res) => {
             });
         }
     });
-});
+};
 
 
 // UnBlock user
-router.post('/unblock/:id', (req, res) => {
+
+function postUnBlock(req, res) {
     let query = {
         _id: req.params.id
     };
+
     User.updateOne(query, {$set : {isBlock : false}}, (err) => {
         if (err) {
             console.log(err);
@@ -77,7 +81,7 @@ router.post('/unblock/:id', (req, res) => {
             });
         }
     });
-});
+};
 
 
 module.exports = router;

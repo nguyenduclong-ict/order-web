@@ -5,7 +5,8 @@ var schema = new Schema({
     value : String
 });
 
-var Token = mongoose.model('Token', schema);
+var Token = {};
+Token = mongoose.model('Token', schema);
 Token.methods = {};
 
 Token.methods.addToken = (token) => {

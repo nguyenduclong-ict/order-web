@@ -17,8 +17,17 @@ var schema = new Schema({
     }
 });
 
-var Product = mongoose.model('Product', schema);
+var Product = {};
+Product = mongoose.model('Product', schema);
 Product.methods = {};
+
+Product.methods.getList = (providerId, categoryId, from, page) => {
+    query = {};
+    if(providerId) query.providerId = providerId;
+    let find = Product.find(query).exec();  
+    if(categoryId) find.populate('categoryId');
+} 
+
 
 // export module
 module.exports = Product;

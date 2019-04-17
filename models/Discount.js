@@ -32,8 +32,8 @@ var schema = new Schema({
     product_id: [mongoose.Schema.Types.ObjectId],
     category_id: [mongoose.Schema.Types.ObjectId]
 });
-
-var Discount = mongoose.model('Discount', schema);
+var Discount = {};
+Discount = mongoose.model('Discount', schema);
 Discount.methods = {};
 
 Discount.methods.addDiscount = (Discount) => {

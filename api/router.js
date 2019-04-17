@@ -7,7 +7,7 @@ var auth = require('../helpers/Auth');
 router.use('/login',  require('./login'));
 router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
-router.use('/upload', require('./upload'));
+router.use('/upload', auth.getInfoFromToken, require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
 router.use('/token', auth.getInfoFromToken, require('./token'));
 router.use('/test', require('./test'));

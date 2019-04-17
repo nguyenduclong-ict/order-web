@@ -2,13 +2,16 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const path = require('path');
+const Error = require('./helpers/Error');
 // 
-process.env.IMAGE_ROOT_PATH = path.join(__dirname, 'upload/images');
-
+process.env.IMAGE_PATH = 'upload/images'
+process.env.TMP_PATH = 'tmp';
+process.env.UPLOAD_PATH = 'upload';
+process.env.ROOT_PATH = __dirname;
 
 // Disable console.log
-if(process.env.EVIRONMENT != 'DEV')
-  console.log = function(){};
+if (process.env.EVIRONMENT != 'DEV')
+  console.log = function () {};
 
 // Express session
 var session = require('express-session');
@@ -31,16 +34,17 @@ const port = process.env.PORT || 3000;
 // parse application/x-www-form-urlencoded
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }))
 
 // parse application/json
-app.use(bodyParser.json())
-// app.use(express.static('public'));
+app.use('/api', bodyParser.json())
+app.use(express.static('public'));
+
 
 //
 app.get('/', (req, res) => {
-  res.send('Hello from Long NUCE');
+  res.sendFile(path.join(__dirname, 'app/index.html'));
   //console.log(req.session);
 });
 
@@ -52,9 +56,14 @@ app.use('/api', apiRouter);
 app.use((err, req, res, next) => {
   if (err) {
     console.log(err);
-    res.json({
-      error: err.message
-    })
+    if (err.code) {
+      res.json(err.code).json({
+        error: err.message
+      });
+    } else
+      res.status(500).json({
+        error: 'Lỗi không xác định!'
+      });
   }
 });
 

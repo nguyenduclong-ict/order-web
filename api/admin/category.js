@@ -5,12 +5,43 @@ var Category = require('../../models/Category');
 var File = require('../../models/File');
 
 router.get('/list/:parentId:-from-:page', getList)
+router.post('/edit/:id', postEditCategory);
+router.post('/add', postAddCategory);
+router.get('/list', getAll);
 
-async function getList (req, res)  {
+
+async function getAll(req, res, next) {
+    Category.find({})
+        .then(docs => {
+            console.log(docs);
+            res.json(docs)
+        })
+        .catch(error => next(error));
+
+    // Category.aggregate([
+    //     // {
+    //     //     $match : {
+    //     //         parentId : null
+    //     //     }
+    //     // }
+    // ]).then(result => {
+    //     console.log(result);
+    //     res.json(result);
+    // })
+}
+
+
+async function getList(req, res) {
     let parentId = req.params.parentId == 'root' ? undefined : req.params.parentId;
     let from = req.params.from;
     let page = req.params.page;
-    Category.getList()
+    Category.methods.getList(parentId,from,page)
+    .then(result => {
+        return res.json(result);
+    })
+    .catch(error => {
+        return res.status(500).json({message : 'Lỗi'});
+    });
 };
 
 router.get('/detail/:id', (req, res) => {
@@ -28,48 +59,39 @@ router.get('/detail/:id', (req, res) => {
 });
 
 // Add Category
-router.post('/add', (req, res) => {
-    let data = req.body;
-    let imageId = req.body.imageId;
-    console.log(data);
-    let category = new Category(data);
-    category.save()
-        .then((doc) => {
-            if(imageId) {
-                File.updateOne({_id : imageId}, {$push : {subOnwer : doc._id}} , (err, doc) => {
-                    return res.json({message : "Add Category success", data : doc})
-                });
-            }
-            return res.json({message : "Add Category success", data : doc})
+async function postAddCategory(req, res, next) {
+    let name = req.body.name;
+    let parentId = req.body.parentId;
+    Category.methods.add(name, parentId)
+        .then(doc => {
+            return res.json({
+                message: 'Add category success',
+                data: doc
+            });
+        }).catch(error => {
+            return next(error);
         })
-        .catch((err) => {
-            return res.json({error : true , message : err.message})            
-        });
-});
+};
 
 
 // Edit Category
-router.post('/edit/:id', (req, res) => {
-    let query = {_id : req.params.id};
-    let imageId = req.body.imageId;
-    let data = req.body;
-    console.log(data);
-    
-    Category.updateOne(query, data, (err) => {
-        if(err) {
-            console.log(err);
-            return res.json({error : "Xay ra loi", message : err.message});
-        } else {
-            if(imageId) {
-                File.updateOne({_id : imageId}, {$push : {subOnwer : req.params.id}}, (err, doc) => {
-                    console.log('Update Category ' + req.params.id + 'success!');
-                    return res.json({message : 'update success!'});                    
-                })
-            }
-            console.log('Update Category ' + req.params.id + 'success!');
-            return res.json({message : 'update success!'});
-        }
-    });
-});
+function postEditCategory(req, res, next) {
+
+    let categoryId =
+        let.params.id;
+    let name = req.body.name;
+    let parentId = req.body.parentId;
+
+    Category.methods.edit(categoryId, name, parentId)
+        .then(result => {
+            console.log(result);
+            return res.json({
+                message: "Update Success!"
+            });
+        })
+        .catch(error => {
+            return next(error);
+        });
+};
 
 module.exports = router;

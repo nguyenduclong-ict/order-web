@@ -9,29 +9,27 @@ var schema = new Schema({
         default: null
     }
 });
-
-var Category = mongoose.model('Category', schema);
+var Category = {};
+Category = mongoose.model('Category', schema);
 Category.methods = {};
 
 // Thêm category
 function add(name, parentId) {
-    let doc = {
-        name: name,
-        parentId: parentId
-    }
-    let category = new Category(doc);
+    let data = {};
+    if (name) data.name = name;
+    if (parentId) data.parentId = parentId;
+    let category = new Category(data);
     return category.save();
 }
 
 // Chỉnh sửa
 async function edit(id, name, parentId) {
-    let doc = {
-        name: name,
-        parentId: parentId
-    };
+    let data = {};
+    if (name) data.name = name;
+    if (parentId) data.parentId = parentId;
     return Category.updateOne({
         _id: id
-    }, doc);
+    }, data);
 }
 
 async function remove(_id) {

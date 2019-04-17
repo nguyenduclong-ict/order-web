@@ -9,8 +9,9 @@ var schema = new Schema({
     time : Date
 });
 
-var File = mongoose.model('File', schema);
-File.methods = {};
+var Comment;
+Comment = mongoose.model('Comment', schema);
+Comment.methods = {};
 
 // export module
-module.exports = File;
+module.exports = Comment;

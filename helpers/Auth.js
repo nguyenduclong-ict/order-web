@@ -20,7 +20,7 @@ async function getTokenFromHeaders(headers) {
 
         let authorization = headers.authorization;
         let token = authorization.split(" ")[1];
-        console.log(token);
+        console.log('Token : \n', token);
         if (!token) throw new NError("Không có token trên header", 403);
         else {
             return token;
