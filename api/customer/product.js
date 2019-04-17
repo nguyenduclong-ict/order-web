@@ -3,13 +3,13 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../../models/Product');
 //
-router.get('/list/:from-:page-:category', getListProduct);
+router.get('/list/:from-:page-:category-:provider', getListProduct);
 
 async function getListProduct(req, res) {
-    let {from , page, category} = req.params;
+    let {from , page, category, provider} = req.params;
     console.log(from, page, category);
-
-    Product.methods.getList('all', category, from, page)
+    
+    Product.methods.getList(provider, category, from, page)
         .then(data => {
             console.log(data);
             return res.json(data);

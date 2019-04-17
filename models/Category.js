@@ -1,6 +1,6 @@
 const mongoose = require('../helpers/MyMongoose').mongoose;
 var Types = require('../helpers/MyMongoose').Types;
-
+const validate = require('../helpers/Validate');
 var Schema = mongoose.Schema;
 var schema = new Schema({
     name: String,
