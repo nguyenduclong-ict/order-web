@@ -66,4 +66,7 @@ typings/
 
 # upload folder
 upload/
+# tmp folder
+tmp/
+
 >>>>>>> 5e233ace9433f6b59774adaa66709911d2bd8e15
