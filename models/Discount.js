@@ -2,7 +2,7 @@ const mongoose = require('../helpers/MyMongoose').mongoose;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    startdate: { // Ngày bắt đẩu áp dụng
+    startDate: { // Ngày bắt đẩu áp dụng
         type: Date,
         required: true
     },

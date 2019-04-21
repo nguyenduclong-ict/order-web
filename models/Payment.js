@@ -1,6 +1,4 @@
 const mongoose = require('../helpers/MyMongoose').mongoose;
-var Types = require('../helpers/MyMongoose').Types;
-const bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({

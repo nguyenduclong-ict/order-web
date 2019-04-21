@@ -8,7 +8,8 @@ var schema = new Schema({
     parentId: {
         type: mongoose.Schema.Types.ObjectId,
         default: null
-    }
+    },
+    isShow : Boolean
 });
 var Category = {};
 Category = mongoose.model('Category', schema);
@@ -19,6 +20,7 @@ function add(name, parentId) {
     let data = {};
     if (name) data.name = name;
     if (parentId) data.parentId = parentId;
+    data.isShow = true;
     let category = new Category(data);
     return category.save();
 }

@@ -5,9 +5,10 @@ var Category = require('../../models/Category');
 var File = require('../../models/File');
 
 router.get('/list/:parentId:-from-:page', getList)
-router.post('/edit/:id', postEditCategory);
-router.post('/add', postAddCategory);
 router.get('/list', getAll);
+router.get('/detail/:id', getDetail);
+router.post('/add', postAddCategory);
+router.post('/edit/:id', postEditCategory);
 
 
 async function getAll(req, res, next) {
@@ -33,7 +34,7 @@ async function getList(req, res) {
     });
 };
 
-router.get('/detail/:id', (req, res) => {
+ function getDetail  (req, res) {
     console.log('get Category by id : ' + req.params.id);
     let CategoryId = req.params.id;
     Category.findOne({
@@ -45,7 +46,7 @@ router.get('/detail/:id', (req, res) => {
             error: "Category khong ton tai"
         })
     })
-});
+};
 
 // Add Category
 async function postAddCategory(req, res, next) {

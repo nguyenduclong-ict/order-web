@@ -3,7 +3,12 @@ const express = require('express');
 var router = express.Router();
 var Payment = require('../../models/Payment');
 
-router.get('/list/:from-:page', (req, res) => {
+router.get('/list/:from-:page', getList);
+router.get('/detail/:id', getDetail);
+router.post('/edit/:id', postEdit);
+router.post('/add', postAdd);
+
+function getList(req, res) {
     let from = Number(req.params.from);
     let page = Number(req.params.page);
     Payment.find()
@@ -13,9 +18,10 @@ router.get('/list/:from-:page', (req, res) => {
         .then(docs => {
             return res.json(docs);
         })
-});
+};
 
-router.get('/detail/:id', (req, res) => {
+
+function getDetail (req, res)  {
     console.log('get Payment by id : ' + req.params.id);
     let PaymentId = req.params.id;
     Payment.findOne({
@@ -27,10 +33,10 @@ router.get('/detail/:id', (req, res) => {
             error: "Payment khong ton tai"
         })
     })
-});
+};
 
 // Add Payment
-router.post('/add', (req, res) => {
+function postAdd (req, res)  {
     let data = req.body;
     console.log(data);
     let newPayment = new Payment(data);
@@ -41,10 +47,10 @@ router.post('/add', (req, res) => {
         .catch((err) => {
             return res.json({error : true , message : err.message})            
         })
-})
+};
 
 // Edit Payment
-router.post('/edit/:id', (req, res) => {
+function postEdit (req, res)  {
     let query = {_id : req.params.id};
     let data = req.body;
     console.log(data);
@@ -58,5 +64,6 @@ router.post('/edit/:id', (req, res) => {
             return res.json({message : 'update success!'});
         }
     });
-})
+};
+
 module.exports = router;
