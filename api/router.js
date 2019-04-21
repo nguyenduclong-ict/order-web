@@ -7,9 +7,12 @@ var auth = require('../helpers/Auth');
 router.use('/login',  require('./login'));
 router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
+router.use('/category', require('./category'));
 router.use('/upload', auth.getInfoFromToken, require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
 router.use('/token', auth.getInfoFromToken, require('./token'));
+router.use('/cart', require('./cart'));
+router.use('/log', auth.authAdmin, require('./log'));
 router.use('/test', require('./test'));
 // Router admin
 router.use('/admin/*', auth.authAdmin);

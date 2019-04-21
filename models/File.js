@@ -5,17 +5,18 @@ const rootPath = process.env.ROOT_PATH;
 const uploadPath = process.env.UPLOAD_PATH;
 const tmpPath = process.env.TMP_PATH;
 const path = require('path');
+const validator = require('../helpers/Validator');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
     owner: mongoose.Schema.Types.ObjectId, // User id
-    subOwner: [mongoose.Schema.Types.ObjectId],
-    filename: String,
-    path: String,
+    subOwner: [mongoose.Schema.Types.ObjectId], // Danh sách các docoment liên quan khác
+    filename: String, // Tên file
+    path: String, // Đường dẫn file 
     type: String, // Loai file
     tags: [String], // 
     isPublic: Boolean, // Co phai public khong
-    created: Date
+    created: Date // Ngày tạoi 
 });
 var File = {};
 File = mongoose.model('File', schema);
@@ -27,17 +28,13 @@ File.methods.addFile = (File) => {
 
 File.methods.removeFile = async (filename, owner) => {
     try {
-        let file = await File.findOne({
-            filename: filename,
-            owner: owner
-        });
+        
+        let query = validator.validateRemove({filename, onwer}, [undefined]);
+        let file = await File.findOne(query);
         console.log(file);
         if (!file) return false;
         else {
-            await File.deleteOne({
-                filename: filename,
-                owner: owner
-            });
+            await File.deleteOne(query);
             let filepath = path.join(rootPath, file.path, file.filename);
             fs.unlinkSync(filepath);
             return true;

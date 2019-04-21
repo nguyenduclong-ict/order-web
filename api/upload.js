@@ -1,13 +1,10 @@
 const express = require('express');
 var router = express.Router();
-var multer = require('multer')
-var fs = require('fs');
+var multer = require('multer');
 const File = require('../models/File');
-const rootPath = process.env.ROOT_PATH;
-const tmpPath = process.env.TMP_PATH;
-
 const path = require('path');
-
+const uploadPath = process.env.UPLOAD_PATH;
+const validator = require('../helpers/Validator');
 
 const MIME_TYPE_MAP = {
     'image/png': 'png',
@@ -17,12 +14,12 @@ const MIME_TYPE_MAP = {
 // Storage 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, tmpPath)
+        cb(null, uploadPath)
     },
     filename: (req, file, cb) => {
         console.log(file, Array.isArray(file));
         if (!MIME_TYPE_MAP[file.mimetype])
-            return cb(Error('Dinh dang file khong ho tro'), null);
+            return cb(Error('Định dạng file không được hỗ trợ'), null);
         else {
             let r = Math.random().toString(36).substring(2);
             cb(null, file.fieldname + '-' + Date.now() + r + '.' + MIME_TYPE_MAP[file.mimetype]);
@@ -36,13 +33,13 @@ var upload = multer({
 });
 
 // Upload single file
-router.post('/file', upload.single('image'), uploadSingleImage);
-router.post('/files', upload.array('images', 10), uploadMultipleImage);
+router.post('/file', upload.single('file'), uploadFile);
+router.post('/files', upload.array('files', 10), uploadFiles);
 router.post('/update', postUpdateFile);
 
-async function uploadSingleImage(req, res, next) {
+async function uploadFile(req, res, next) {
     let filename = req.file.filename;
-    let filepath = tmpPath;
+    let filepath = uploadPath;
     let filetype = req.file.mimetype.split('/')[0];
     console.log(filetype);
     console.log(filepath);
@@ -52,8 +49,8 @@ async function uploadSingleImage(req, res, next) {
         filename: filename,
         path: filepath,
         type: filetype,
-        isPublic: req.body.isPublic ? req.body.isPublic : true,
-        tags: req.body.tags ? req.body.tags : []
+        isPublic: req.body.isPublic || true,
+        tags: req.body.tags ||  []
     }
 
     let file = new File(obj);
@@ -67,20 +64,20 @@ async function uploadSingleImage(req, res, next) {
 };
 
 // Upload multiple file
-async function uploadMultipleImage(req, res, next) {
+async function uploadFiles(req, res, next) {
     let result = [];
     try {
         req.files.forEach(async element => {
             let filename = element.filename;
-            let filepath = tmpPath;
+            let filepath = uploadPath;
             let filetype = element.mimetype.split('/')[0];
             let obj = {
                 owner: req.body.owner,
                 filename: filename,
                 path: filepath,
                 type: filetype,
-                public: req.body.isPublic ? req.body.isPublic : true,
-                tags: req.body.tags ? req.body.tags : []
+                public: req.body.isPublic || true,
+                tags: req.body.tags ||  []
             }
 
             let file = new File(obj);
@@ -93,19 +90,14 @@ async function uploadMultipleImage(req, res, next) {
     res.json(result);
 };
 
-
+// 
 async function postUpdateFile(req, res, next) {
     let filename = req.body.filename;
     let owner = req.user._id;
     let tags = req.body.tags instanceof Array ? req.body.tags : undefined;
     let isPublic = req.body.isPublic;
 
-    let dataUpdate = {
-        isPublic : isPublic,
-        tags : tags
-    }
-    if(!dataUpdate.isPublic) delete dataUpdate.isPublic;
-    if(!dataUpdate.tags) delete dataUpdate.tags;
+    let dataUpdate = validator.validateRemove({isPublic, tags}, [undefined]);
     console.log(filename, owner, dataUpdate);
     File.methods.update(filename, owner, dataUpdate)
         .then(result => {

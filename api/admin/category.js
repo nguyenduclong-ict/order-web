@@ -17,24 +17,13 @@ async function getAll(req, res, next) {
             res.json(docs)
         })
         .catch(error => next(error));
-
-    // Category.aggregate([
-    //     // {
-    //     //     $match : {
-    //     //         parentId : null
-    //     //     }
-    //     // }
-    // ]).then(result => {
-    //     console.log(result);
-    //     res.json(result);
-    // })
 }
 
 
 async function getList(req, res) {
     let parentId = req.params.parentId == 'root' ? undefined : req.params.parentId;
-    let from = req.params.from;
-    let page = req.params.page;
+    let from = Number(req.params.from);
+    let page = Number(req.params.page);
     Category.methods.getList(parentId,from,page)
     .then(result => {
         return res.json(result);

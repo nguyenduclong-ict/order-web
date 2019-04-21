@@ -8,35 +8,25 @@ const express = require('express');
 var router = express.Router();
 var File = require('../models/File');
 const NError = require('../helpers/Error');
-const imageDirectory = process.env.IMAGE_ROOT_PATH;
+const rootPath = process.env.ROOT_PATH;
 const path = require('path');
-const fs = require('fs');
 
-router.get('/image/', getImage);
-router.post('/image/delete/', postDeleteImage);
+router.get('/file/', getFile);
+router.post('/file/delete/', postDeleteFile);
 
-// 
-async function postDeleteImage(req, res) {
+// Xoá ảnh
+async function postDeleteFile(req, res) {
     let filename = req.query.filename;
-    let directory = imageDirectory;
-    let filepath = path.join(directory, filename);
-    if (!req.user) return res.status(500).send('Error');
-    File.deleteOne({
-            owner: req.user._id,
-            filename: filename
-        })
-        .then(async result => {
-            if (result.deletedCount == 0) throw new Error('File not found');
-            fs.unlink(filepath, (err) => {
-                if (!err) return res.status(200).send('Xoa file thanh cong');
-                else throw new Error('Unlink Error');
-            });
-
-        })
-        .catch(error => {
-            console.log(error);
-            return res.status(500).send('Lỗi xảy ra, xoá file thất bại');
-        })
+    if (!req.user) return res.status(403).json({message : 'Forbidden'});
+    let owner = req.user.type == 'admin' ? undefined : req.user._id;
+    File.methods.removeFile(filename,owner)
+        .then(result => {
+            if(result) {
+                return res.json({result : true, message : 'Xoá file thành công!'});
+            } else {
+                return res.status(500).json({message : 'Lỗi'});
+            }
+        });
 };
 
 
@@ -45,7 +35,7 @@ async function postDeleteImage(req, res) {
  * filename = req.query.filename
  * 
  */
-async function getImage(req, res) {
+async function getFile(req, res) {
     let user = req.user;
     let file = req.data.file;
     try {
@@ -53,8 +43,9 @@ async function getImage(req, res) {
             throw new NError("File not exist", 403);
         else if (!file.isPublic && !user._id.equals(file.owner))
             throw new NError("Khong co quyen truy cap file", 403);
-        else
-            return res.sendFile(file.path);
+        else {
+            return res.sendFile(path.join(rootPath, file.path, filename));
+        }
 
     } catch (error) {
         return res.status(error.code).send(error.message);

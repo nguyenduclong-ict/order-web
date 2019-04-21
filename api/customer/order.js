@@ -2,7 +2,7 @@
  * @Author: Long Nguyễn 
  * @Date: 2019-04-09 10:16:37 
  * @Last Modified by: Long Nguyễn
- * @Last Modified time: 2019-04-09 14:07:42
+ * @Last Modified time: 2019-04-21 15:56:58
  */
 
 const express = require('express');
@@ -50,6 +50,14 @@ async function postChangeOrderQuantity(req, res) {
 /**
  * Body : orderId, comment, paymentId, quantity
  */
+
+ /** Quy trinh
+  * 1 Lấy thông tin trong giở hàng
+  * 2 Kiểm tra sản phẩm có thể mua không và số lượng đặt mua có hợp lệ không
+  * 3 Kiểm tra phương thức thanh toán có hợp lệ không
+  * 4 Tạo đơn đặt hàng mới
+  * 5 Xoá đơn hàng khỏi giỏ hàng
+  */
 async function postOrder(req, res) {
     let userId = req.user._id;
     let orderId = req.body.orderId;
@@ -57,7 +65,9 @@ async function postOrder(req, res) {
     let paymentId = req.body.paymentId;
     let quantity = req.body.quantity;
     try {
-        let order = Order.findOne({_id : orderId, userId :userId}).populate('productId');
+        // 1
+        
+        let order = Order.findOne({_id : orderId, userId :userId}).populate('productId'); // 
         if(!order) throw new NError('Không tồn tại đơn hàng', 404);
            
         if (quantity > order.productId.maxSold) throw new NError('Số lượng đặt vượt quá cho phép', 500);

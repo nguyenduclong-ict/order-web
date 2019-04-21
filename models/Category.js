@@ -1,6 +1,7 @@
 const mongoose = require('../helpers/MyMongoose').mongoose;
 var Types = require('../helpers/MyMongoose').Types;
-const validate = require('../helpers/Validate');
+const validate = require('../helpers/Validator');
+
 var Schema = mongoose.Schema;
 var schema = new Schema({
     name: String,
@@ -40,16 +41,10 @@ async function remove(_id) {
 
 // Lấy danh sách theo parenId
 async function getList(parentId, from, page) {
-    let result;
-    if (!parentId)
-        result = Category.find();
-    else
-        result = Category.find({
-            parentId: parentId
-        });
-    if (from) result.skip(from);
-    if (page) result.limit(page);
-    return result;
+    from = Number(from);    
+    page = Number(page);
+    let query = validate.validateRemove({parentId}, [undefined, 'all'])
+    return Category.find(query).skip(from).limit(page);
 }
 
 Category.methods.getList = getList;

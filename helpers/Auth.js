@@ -15,6 +15,7 @@ async function checkToken(token) {
     return tokenData;
 }
 
+// Lấy Barer token from header
 async function getTokenFromHeaders(headers) {
     try {
 
@@ -32,7 +33,7 @@ async function getTokenFromHeaders(headers) {
     }
 }
 
-// 
+// Lấy token trong database bằng id lưu trong db
 async function checkTokenById(tokenId) {
     token = await Token.findById(tokenId);
     if (!token) throw new NError("Not found token in database");
@@ -113,6 +114,7 @@ async function authFile(req, res, next) {
 }
 
 async function getInfoFromToken(req, res, next) {
+    if(req.url === '/guest-token') return next();
     getTokenFromHeaders(req.headers)
         .then(token => checkToken(token))
         .then(tokenData => checkUser(tokenData.id))
@@ -127,6 +129,8 @@ async function getInfoFromToken(req, res, next) {
 }
 
 module.exports = {
+    getTokenFromHeaders,
+    checkToken,
     authAdmin,
     authCustomer,
     authProvider,

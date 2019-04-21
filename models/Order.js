@@ -4,9 +4,12 @@ const bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    productId: {
+    productId: { // Link đến sản phẩm
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    product : { // Dữ liệu của sản phẩm tại thời điểm đặt hàng
+        
     },
     paymentId: mongoose.Schema.Types.ObjectId,
     customerId : {
@@ -18,24 +21,30 @@ var schema = new Schema({
         required: true
     },
     discountId: [mongoose.Schema.Types.ObjectId],
-    quantity: {
+    quantity: { // Số lượng đặt hàng
         type: Number,
         default: 1,
         required: true,
         validate: {
-            validator: v => {
-                return v >= 1 ? true : false
-            },
+            validator: v => v > 0,
             message: props => `quantity must greater than 0!`
+        }
+    },
+    totalPay : { // Tổng thanh toán
+        type : Number, 
+        default : 0,
+        validate : {
+            validator : v => v > 0,
+            message : props => `total pay must greater than 0!`
         }
     },
     status: [{
         code: {
-            
+            // 0 : Chờ xác nhận,  1 : Đã xác nhận, 2 : Đang giao , 3 : Hoàn thành, 4 : Bị huỷ
             type: Number,
-            enum: [-1,0, 1, 2, 3, 4],
+            enum: [0, 1, 2, 3, 4],
             default : 0
-        }, // -1 : Trong giỏ hàng, 0 : Chờ xác nhận,  1 : Đã xác nhận, 2 : Đang giao , 3 : Hoàn thành, 4 : Bị huỷ
+        }, 
         comment: String,
         time: {
             type: Date,

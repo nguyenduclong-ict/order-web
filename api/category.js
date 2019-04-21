@@ -1,19 +1,22 @@
 // router path : /api/Category
 const express = require('express');
 var router = express.Router();
-var Category = require('../../models/Category');
+var Category = require('../models/Category');
 
-router.get('/list/:from-:page-:root', (req, res) => {
-    let root = req.params.root;
-    let from = req.params.from;
-    let page = req.params.page;
-    let query = {};
-    query.root = root ? root : undefined;
-    Category.find(query, {skip : from, limit : page}, (err, docs) => {
-        res.staus(200).json(docs);
+router.get('/list/:from-:page-:parent', getListCategory);
+
+
+async function getListCategory(req, res) {
+    let {from , page } = req.params;
+    let parentId = req.params.parent;
+    Category.methods.getList(parentId,from,page)
+    .then(result => {
+        return res.json(result);
     })
-});
-
+    .catch(error => {
+        return res.status(500).json({message : 'Lỗi'});
+    });
+};
 
 
 module.exports = router;

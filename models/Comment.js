@@ -6,7 +6,8 @@ var schema = new Schema({
     owner : mongoose.Schema.Types.ObjectId, // User id
     subOwner : [mongoose.Schema.Types.ObjectId],
     comment :  String,
-    time : Date
+    time : Date,
+    isShow : Boolean
 });
 
 var Comment;

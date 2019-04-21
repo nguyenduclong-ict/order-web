@@ -3,12 +3,30 @@ var router = express.Router();
 const File =require('../models/File');
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const tokenGuestExpires = process.env.TOKEN_EXPIRES_GUEST;
+const jwt = require('jsonwebtoken');
+const jwt_secret = process.env.JWT_SECRET || 'default';
 
 router.get('/info', getInfo);
 router.post('/edit', postEditInfo);
 router.post('/change-password', postChangePassword);
 router.get('/status', getTokenStatus);
+router.get('/guest-token', getGuestToken);
 
+// 
+async function getGuestToken(req, res) {
+    console.log(req.sessionID);
+    let r = Math.random().toString(36).substring(2);
+    let payload = {
+        ssid : req.sessionID
+    }
+    let token = jwt.sign( payload , jwt_secret, { expiresIn: tokenGuestExpires });
+    res.send(token);
+}
+
+
+
+// Lấy thông tin user bằng token
 async function getInfo (req, res) {
     let user = req.user;
     console.log(req.user);
