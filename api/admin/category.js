@@ -44,7 +44,7 @@ async function getList(req, res) {
             res.json(docs);
         else res.json({
             error: "Category khong ton tai"
-        })
+        });
     })
 };
 
