@@ -33,11 +33,11 @@ async function postLogin (req ,res) {
             });
             console.log(result);
             // Kiểm tra loại tài khoản đăng nhập
-            if (result.type !== data.type) return res.json({
-                result: false,
-                message: 'Tài khoản không hợp lệ!',
-                messdetail: 'Loại tài khoản không chính xác!'
-            });
+            // if (result.type !== data.type) return res.json({
+            //     result: false,
+            //     message: 'Tài khoản không hợp lệ!',
+            //     messdetail: 'Loại tài khoản không chính xác!'
+            // });
             bcrypt.compare(data.password, result.password, async (err, same) => {
                 if (err)
                     return res.json({
@@ -57,7 +57,8 @@ async function postLogin (req ,res) {
                             result: true,
                             message: 'Đăng nhập thành công',
                             token: token,
-                            imageCode : r._id
+                            imageCode : r._id,
+                            role : result.type 
                         })
                     } catch (error) {
                         return res.status(200).json({
