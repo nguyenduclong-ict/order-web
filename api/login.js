@@ -58,7 +58,7 @@ async function postLogin (req ,res) {
                             message: 'Đăng nhập thành công',
                             token: token,
                             imageCode : r._id,
-                            role : s
+                            role : result.type 
                         })
                     } catch (error) {
                         return res.status(200).json({

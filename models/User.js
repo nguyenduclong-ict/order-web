@@ -53,7 +53,11 @@ schema.pre('updateOne', function (next) {
 var User = {};
 User = mongoose.model('User', schema);
 User.methods = {};
-
+User.methods.addUser = addUser;
+function addUser (data) {
+    let user = new User(data);
+    return user.save();
+}
 User.methods.getUser = async function (username) {
     return User.aggregate(
         [{

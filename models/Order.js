@@ -19,7 +19,6 @@ var schema = new Schema({
       }
     }
   ],
-
   paymentId: mongoose.Schema.Types.ObjectId,
   customerId: {
     type: mongoose.Schema.Types.ObjectId,

@@ -47,11 +47,11 @@ OrderDetail.methods = {};
 
 /**
  * 
- * @param {*} customerId 
- * @param {*} oicId 
- * @param {*} paymentId 
- * @param {*} commnet 
- * @param {mã giảm giá} discountId
+ * @param {Mã khách hàng} customerId
+ * @param {Mã của sản phẩm trong giỏ hàng} oicId 
+ * @param {Mã của phương thức thanh toán} paymentId 
+ * @param {Lưu ý cho người bán} commnet 
+ * @param {Mã giảm giá} discountId
  */
 async function addOrderDetail(customerId, oicId, paymentId, commnet, discount) {
     let oic = await Cart.methods.getOrderDetailInCart(customerId, undefined, oicId);
