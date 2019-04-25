@@ -7,7 +7,7 @@
 
 const express = require('express');
 const router = express.Router();
-const Order = require('../../models/Order');
+const Order = require('../../models/OrderDetail');
 const Product = require('../../models/Product');
 const Payment = require('../../models/Payment');
 const Cart= require('../../models/Cart');
@@ -64,26 +64,9 @@ async function postOrder(req, res) {
     let oicId = req.body.oicId; // id of order in cart
     let commnet = req.body.comment;
     let paymentId = req.body.paymentId;
-    
-    try {
-        // 1
-        
-        let order = Order.findOne({_id : orderId, userId :userId}).populate('productId'); // 
-        if(!order) throw new NError('Không tồn tại đơn hàng', 404);
-           
-        if (quantity > order.productId.maxSold) throw new NError('Số lượng đặt vượt quá cho phép', 500);
-        else order.quantity = quantity;
-        let payment = await Payment.findOne({
-            _id: paymentId
-        });
-        if (!payment) throw new NError('Không tìm thấy phương thức thanh toán', 404);
 
-        order.payment = payment._id;
-        order.status.push({
-            code : 0,
-            comment : commnet,
-            time : Date.now()
-        })
+    try {
+        
 
         let result = await Order.updateOne({_id : orderId}, order);
         if(result) return res.send('Đặt hàng thành công');

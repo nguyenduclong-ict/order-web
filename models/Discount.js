@@ -27,6 +27,7 @@ var schema = new Schema({
         enum: ['single', 'group'],
         required: [true, 'type required!']
     },
+    orderId : mongoose.Schema.Types.ObjectId,
     product_id: [mongoose.Schema.Types.ObjectId], // Nếu áp dụng cho 1 sản phẩm nhất định,
     category_id: [mongoose.Schema.Types.ObjectId] // Nếu áp dụng cho 1 nhóm sản phẩm
 });

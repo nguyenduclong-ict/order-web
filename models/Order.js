@@ -1,50 +1,9 @@
 const mongoose = require("../helpers/MyMongoose").mongoose;
-var Types = require("../helpers/MyMongoose").Types;
-const bcrypt = require("bcrypt");
-const Cart = require('../models/Cart');
-
 var Schema = mongoose.Schema;
+
 var schema = new Schema({
-  productId: {
-    // Link đến sản phẩm
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  product: {
-    // Dữ liệu của sản phẩm tại thời điểm đặt hàng
-    name: String,
-    description: String,
-    price: Number, // Gia san pham
-  },
-  paymentId: mongoose.Schema.Types.ObjectId,
-  customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  providerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  discountId: [mongoose.Schema.Types.ObjectId],
-  quantity: {
-    // Số lượng đặt hàng
-    type: Number,
-    default: 1,
-    required: true,
-    validate: {
-      validator: v => v > 0,
-      message: props => `quantity must greater than 0!`
-    }
-  },
-  totalPay: {
-    // Tổng thanh toán
-    type: Number,
-    default: 0,
-    validate: {
-      validator: v => v > 0,
-      message: props => `total pay must greater than 0!`
-    }
-  },
+  orderDetails: [mongoose.Schema.Types.ObjectId],
+  totalPay: Number,
   status: [
     {
       code: {
@@ -59,16 +18,17 @@ var schema = new Schema({
         default: Date.now()
       }
     }
-  ]
+  ],
+
+  paymentId: mongoose.Schema.Types.ObjectId,
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+  created: Date
 });
 
 var Order = mongoose.model("Order", schema);
 Order.methods = {};
 
-async function addOrder(customerId, oicId, paymentId, commnet) {
-    let oic = await Cart.methods.getOrderInCart(customerId, undefined, oicId);
-
-}
-
-// export module
 module.exports = Order;

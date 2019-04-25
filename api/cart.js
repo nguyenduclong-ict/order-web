@@ -4,7 +4,7 @@ const auth = require("../helpers/Auth");
 
 router.get("/", getCart);
 router.get("/cart-detail", auth.authCustomer, getCartOfUser);
-router.get("/add-to-cart", auth.authCustomer, removeFromCart);
+router.get("/add-to-cart", auth.authCustomer, getRemoveFromCart);
 router.post("/join", auth.authCustomer, postJoinCart);
 router.post("/add-to-cart", auth.authCustomer, postAddToCart);
 

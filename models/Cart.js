@@ -1,4 +1,4 @@
-const mongoose = require('../helpers/MyMongoose').mongoose;
+ const mongoose = require('../helpers/MyMongoose').mongoose;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
@@ -68,7 +68,7 @@ Cart.methods.getOrderInCart = getOrderInCart;
  */
 async function getOrderInCart (userId, ssid, oicId)  {
     let cart =  Cart.findOne({ $or : [ {userId}, {ssid}] });
-    cart.orders.find(e => {})
+    cart.orders.find(e => {      })
 }
 
 Cart.methods.joinCart = async (from, to) => {

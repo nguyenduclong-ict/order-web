@@ -1,7 +1,7 @@
 const mongoose = require('../helpers/MyMongoose').mongoose;
 
 var Schema = mongoose.Schema;
-var schema = new Schema({
+var schema = new Schema({   
     name : {
         type : String,
         required : true
