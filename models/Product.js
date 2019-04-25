@@ -9,6 +9,7 @@ var schema = new Schema({
     categoryId : mongoose.Schema.Types.ObjectId,   
     name : String,
     description : String,
+    price : Number, // Gia san pham
     isSale : Boolean, // Có đang sale hay không 
     sale : Number, // Phần trăm sale
     maxOrder : Number,   // sô lượng tối đa cho phép đặt

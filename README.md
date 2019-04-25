@@ -50,6 +50,7 @@ get: /api/guest-token
 ```
 get: /api/category/list/:from-:page:-parent
 ```
+
 > parent có thể để ‘all’
 #### Router customer/product 
 ##### Lấy danh sách sản phẩm cho trang chủ
@@ -90,6 +91,11 @@ get: /api/admin/category/detail/:id
 ##### Thêm 
 ```
 post: /apt/admin/category/add
+body : {
+    name: String,
+    parentId: objectId,
+    isShow : Boolean
+}
 ```
 ##### Sửa Category
 post: /api/admin/category/edit/:id
@@ -123,21 +129,39 @@ get: /api/admin/discount/edit/:id
 #### Router quản lý phương thức thanh toán
 ##### Lấy danh sách
 ```
-get: /list/:from-:page
+get: /api/payment/list/:from-:page
 ```
 ##### Lấy chi tiết
 ```
-get: /detail/:id
+get: /api/payment/detail/:id
 ```
 ##### Chỉnh sửa
 ```
-post: /edit/:id
+post: /api/payment/edit/:id
 ```
 ##### Thêm
 ```
-post: /add
+post: /api/payment/add
 body = {
     name, // String
     description // String
 }
 ```
+#### Router Cart
+##### Lấy thông tin giỏ hàng
+```
+get /api/cart/cart-detail
+```
+##### Thêm sản phẩm vào giỏ hàng 
+```
+post /api/cart/add-to-cart
+body : {
+    productId, 
+    quantity
+}
+```
+##### Xoa san phẩm khỏi giỏ hàng
+```
+post /api/cart/delete-from-cart/:id
+// id la id cua đơn hàng trong giỏ hàng
+``` 

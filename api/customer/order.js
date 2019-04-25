@@ -10,6 +10,7 @@ const router = express.Router();
 const Order = require('../../models/Order');
 const Product = require('../../models/Product');
 const Payment = require('../../models/Payment');
+const Cart= require('../../models/Cart');
 const NError = require('../../helpers/Error');
 
 // Setup router
@@ -60,10 +61,10 @@ async function postChangeOrderQuantity(req, res) {
   */
 async function postOrder(req, res) {
     let userId = req.user._id;
-    let orderId = req.body.orderId;
+    let oicId = req.body.oicId; // id of order in cart
     let commnet = req.body.comment;
     let paymentId = req.body.paymentId;
-    let quantity = req.body.quantity;
+    
     try {
         // 1
         
@@ -141,7 +142,6 @@ async function postCancelOrder(req, res) {
     } catch (error) {
         if (error.code) return res.status(error.code).send(error.message);
         else return res.status(500).send('Error');
-
     }
 }
 
@@ -180,11 +180,11 @@ async function postSuccessOrder (req, res) {
 
 async function postAddToCart(req, res) {
     let userId = req.user._id;
-    let productId = req.body.productId;
+    let orderCartId = req.body.ocid;
     let paymentId = req.body.paymentId;
-    
+
     try {
-        let product = await Product.findOne({
+        let order = await Product.findOne({
             _id: productId
         });
         if (!product) throw new NError('San pham khong ton tai', 404);

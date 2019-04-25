@@ -96,7 +96,7 @@ User.methods.getUser = async function (username) {
                                             }, 0]
                                         },
                                         {
-                                            $eq : ["$$item.type", "image"]
+                                            $eq: ["$$item.type", "image"]
                                         }
                                     ]
                                 }
@@ -111,7 +111,9 @@ User.methods.getUser = async function (username) {
 
 
 User.methods.getListUser = async function (type, from, page) {
-    let match = type === 'all' ? {} : { "type" : type};
+    let match = type === 'all' ? {} : {
+        "type": type
+    };
     return User.aggregate(
             [{
                     $lookup: {
@@ -150,7 +152,7 @@ User.methods.getListUser = async function (type, from, page) {
                                                 }, 0]
                                             },
                                             {
-                                                $eq : ["$$item.type", "image"]
+                                                $eq: ["$$item.type", "image"]
                                             }
                                         ]
                                     }

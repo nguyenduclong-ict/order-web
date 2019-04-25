@@ -89,7 +89,7 @@ async function authCustomer(req, res, next) {
             return next();
         }).catch(error => {
             return res.status(403).send(error.message);
-        })
+        });
 }
 
 async function authFile(req, res, next) {

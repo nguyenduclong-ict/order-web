@@ -24,8 +24,6 @@ async function getGuestToken(req, res) {
     res.send(token);
 }
 
-
-
 // Lấy thông tin user bằng token
 async function getInfo (req, res) {
     let user = req.user;

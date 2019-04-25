@@ -57,6 +57,7 @@ app.use((err, req, res, next) => {
   if (err) {
     console.log(err);
     if (err.code) {
+      // 
       res.json(err.code).json({
         error: err.message
       });

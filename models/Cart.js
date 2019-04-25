@@ -45,12 +45,30 @@ Cart.methods.addToCart = async (userId, ssid, productId, quantity) => {
     return Cart.updateOne({ $or : [ {userId}, {ssid}] },{ $push : {orders : order}});
 };
 
+
+// Xoa san pham trong gio hang
 Cart.methods.removeFromCart = async (userId, ssid, id) => {
     return Cart.updateOne({ $or : [ {userId}, {ssid}] },{ $pull : {orders : {id : id}}});
 };
 
+/**
+ * 
+ */
 Cart.methods.getCart = async (userId, ssid) => {
     return Cart.findOne({ $or : [ {userId}, {ssid}] });
+}
+
+Cart.methods.getOrderInCart = getOrderInCart; 
+
+/**
+ * 
+ * @param {id cua khach hang} userId 
+ * @param {id cua guest} ssid 
+ * @param {id cua đơn hàng trong giỏ hàng} oicId 
+ */
+async function getOrderInCart (userId, ssid, oicId)  {
+    let cart =  Cart.findOne({ $or : [ {userId}, {ssid}] });
+    cart.orders.find(e => {})
 }
 
 Cart.methods.joinCart = async (from, to) => {
