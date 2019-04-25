@@ -82,7 +82,7 @@ async function postChangePassword(req, res) {
 
 async function getTokenStatus(req, res) {
     console.log(req.user);
-    return res.json(200).json({status : 'live', role : req.user.type});
+    return res.status(200).json({status : 'live', role : req.user.type});
 }
 
 module.exports = router;
