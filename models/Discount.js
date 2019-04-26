@@ -10,11 +10,7 @@ var schema = new Schema({
         type: Date,
         required: true
     },
-    status: {
-        type: Number,
-        enum: [0, 1], // Chua su dung, da su dung
-        default: [0]
-    },
+    status: Boolean, // Co the ap dung khong?
     value: { // Phần trăm giảm giá
         type: Number,
         required: () => {
@@ -27,9 +23,8 @@ var schema = new Schema({
         enum: ['single', 'group'],
         required: [true, 'type required!']
     },
-    orderId : mongoose.Schema.Types.ObjectId,
-    product_id: [mongoose.Schema.Types.ObjectId], // Nếu áp dụng cho 1 sản phẩm nhất định,
-    category_id: [mongoose.Schema.Types.ObjectId] // Nếu áp dụng cho 1 nhóm sản phẩm
+    productId: [mongoose.Schema.Types.ObjectId], // Nếu áp dụng cho 1 sản phẩm nhất định,
+    categoryId: [mongoose.Schema.Types.ObjectId] // Nếu áp dụng cho 1 nhóm sản phẩm
 });
 var Discount = {};
 Discount = mongoose.model('Discount', schema);

@@ -30,7 +30,7 @@ Product.methods.getList = async (providerId, categoryId, from, page) => {
     page = Number(page);
     query = validate.validateRemove({providerId, categoryId}, [undefined, 'all']); 
     console.log('Query', query);
-    query.hide = false;
+    query.isShow = false;
     return Product.find(query)
         .populate('categoryId')
         .skip(from)
