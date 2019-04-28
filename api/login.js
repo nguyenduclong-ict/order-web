@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken');
 var jwt_secret = process.env.JWT_SECRET || 'default';
 var tokenExpires = process.env.TOKEN_EXPIRES || 3600;
 var TokenStore = require('../helpers/Token');
-
+var Log = require('../models/Log');
 
 router.post('/', postLogin);
 
@@ -53,6 +53,7 @@ async function postLogin (req ,res) {
                     let token = jwt.sign( payload , jwt_secret, { expiresIn: tokenExpires });
                     try {
                         let r = await TokenStore.push(token);
+                        Log.methods.addLog('User login success', result, 'login');
                         return res.status(200).json({
                             result: true,
                             message: 'Đăng nhập thành công',

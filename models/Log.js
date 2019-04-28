@@ -9,10 +9,9 @@ var schema = new Schema({
     created : Date
 });
 
-var Log;
+var Log = {};
 Log = mongoose.model('Log', schema);
 Log.methods = {};
-
 schema.pre('save', (next) => {
     this.create = Date.now();
     next();
