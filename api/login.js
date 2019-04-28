@@ -13,6 +13,7 @@ router.post('/', postLogin);
 
 async function postLogin (req ,res) {
     let data = req.body;
+    console.log(data);
     User.findOne({
         $or: [
             {email: data.email},
