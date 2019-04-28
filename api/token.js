@@ -26,21 +26,17 @@ async function getGuestToken(req, res) {
 
 // Lấy thông tin user bằng token
 async function getInfo (req, res) {
-    let user = req.user;
-    console.log(req.user);
-    File.find({owner : user._id , of : 'user/avatar'})
-    .exec()
-    .then(images => {
-        console.log(images);
-        images = images.map(e => e.filename);
-        user.info.avatar = images;
-        user.password = undefined;
-        return res.json(user);
-    })
-    .catch(error => {
-        console.log(error);
-        return res.json(user);
-    });
+    User.methods.getUser(req.user.email)
+        .then(result => {
+            user = {...result[0]};
+            delete user._id;
+            return res.json(user);
+        })
+        .catch(err => {
+            return res.status(500).json({message : 'Không lấy được thông tin từ token'});
+        })
+
+    //
 };
 
 async function postEditInfo(req, res) {

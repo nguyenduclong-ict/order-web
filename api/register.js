@@ -17,6 +17,8 @@ router.post('/', async (req, res) => {
     if (data.type === 'provider' || data.type === 'admin')
         data.isBlock = true;
     else data.isBlock = false;
+    this.info = {}
+    console.log(data);
     User.methods.addUser(data)
         .then(user => {
             console.log('Success', user);
@@ -25,7 +27,7 @@ router.post('/', async (req, res) => {
         .catch(err => {
             console.log('Error', err);
             let message = 'Đăng kí thất bại';
-            if (err.code === 11000) message += ', Email hoặc Username đã có người sử dụng!';
+            if (err.code === 11000) message += ', Email hoặc Userna me đã có người sử dụng!';
             return res.json({
                 resut: false,
                 message: message

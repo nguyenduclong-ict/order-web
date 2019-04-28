@@ -16,7 +16,7 @@ async function getListUserPage(req, res) {
     User.methods.getListUser(type, from, page)
         .then(list => {
             list = list.map(e => e);
-            console.log(list);
+            console.log('Lits' , list);
             return res.json(list);
         })
         .catch(error => {
@@ -53,7 +53,9 @@ function postBlock (req, res)  {
         } else {
             console.log('Block user ' + req.params.id + 'success!');
             return res.json({
-                message: 'Block success!'
+                message: 'Block success!',
+                result : true,
+                isBlock : true
             });
         }
     });
@@ -77,7 +79,9 @@ function postUnBlock(req, res) {
         } else {
             console.log('UnBlock user ' + req.params.id + 'success!');
             return res.json({
-                message: 'unBlock success!'
+                message: 'unBlock success!',
+                result : true,
+                isBlock : false
             });
         }
     });

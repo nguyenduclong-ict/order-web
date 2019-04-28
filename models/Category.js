@@ -46,6 +46,7 @@ async function getList(parentId, from, page) {
     from = Number(from);    
     page = Number(page);
     let query = validate.validateRemove({parentId}, [undefined, 'all'])
+    if(parentId === 'root') query.parentId = null;
     return Category.find(query).skip(from).limit(page);
 }
 

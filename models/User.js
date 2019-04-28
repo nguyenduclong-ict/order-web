@@ -19,20 +19,21 @@ var schema = new Schema({
     info: {
         name: String,
         address: String,
-        phone: Number
+        phone: String,
+        
     }
 });
 
 schema.pre('save', function (next) {
     bcrypt.hash(this.password, 10, (err, hash) => {
         this.password = hash;
-        if (!this.info) this.info = {
+        this.info = {
             name: '',
             address: '',
             phone: '',
             avatar: []
         }
-        console.log(hash);
+        console.log('Day la this' , this);
         next();
     })
 });
@@ -53,7 +54,8 @@ function addUser (data) {
     let user = new User(data);
     return user.save();
 }
-User.methods.getUser = async function (username) {
+User.methods.getUser = async function (email) {
+    console.log(email);
     return User.aggregate(
         [{
                 $lookup: {
@@ -65,8 +67,7 @@ User.methods.getUser = async function (username) {
             },
             {
                 $match: {
-                    "username": username,
-                    "type": "provider"
+                    "email": email
                 }
             },
             {
