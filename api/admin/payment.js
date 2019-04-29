@@ -7,6 +7,18 @@ router.get('/list/:from-:page', getList);
 router.get('/detail/:id', getDetail);
 router.post('/edit/:id', postEdit);
 router.post('/add', postAdd);
+router.post('/change-display', postChangeDisplay);
+
+
+function postChangeDisplay(req, res) {
+    let {ids, isShow} = req.body;
+
+    Payment.updateMany({_id : {$in : ids}}, {isShow : isShow}) 
+        .then(result => {
+            return res.json({ok : 1, message : "Thành công"});
+        })
+
+}
 
 function getList(req, res) {
     let from = Number(req.params.from);
@@ -39,13 +51,14 @@ function getDetail (req, res)  {
 function postAdd (req, res)  {
     let data = req.body;
     console.log(data);
+    data.isShow = true;
     let newPayment = new Payment(data);
     newPayment.save()
         .then((doc) => {
-            return res.json({message : "Add Payment success", data : doc})
+            return res.json({ok : 1, message : "Thêm thành công", data : doc})
         })
         .catch((err) => {
-            return res.json({error : true , message : err.message})            
+            return res.json({ok : 0 , message : err.message})            
         })
 };
 
@@ -58,10 +71,9 @@ function postEdit (req, res)  {
     Payment.updateOne(query, data, (err) => {
         if(err) {
             console.log(err);
-            return res.json({error : "Xay ra loi", message : err.message});
+            return res.json({ok : 0, message : "Xảy ra lỗi", message2 : err.message});
         } else {
-            console.log('Update Payment ' + req.params.id + 'success!');
-            return res.json({message : 'update success!'});
+            return res.json({ ok : 1, message : 'Cập nhật thành công!'});
         }
     });
 };

@@ -4,12 +4,20 @@ var router = express.Router();
 var Category = require('../../models/Category');
 var File = require('../../models/File');
 
-router.get('/list/:parentId:-from-:page', getList)
+router.get('/list/:parentId-:from-:page', getList)
 router.get('/list', getAll);
 router.get('/detail/:id', getDetail);
 router.post('/add', postAddCategory);
 router.post('/edit/:id', postEditCategory);
+router.post('/set-show', postSetShow);
 
+function postSetShow(req, res) {
+    let {ids, isShow} = req.body;
+    Category.methods.setShow(ids,isShow)
+        .then(result => {
+            return res.json({ok : 1, isShow : isShow});
+        })
+}
 
 async function getAll(req, res, next) {
     Category.find({})
@@ -22,6 +30,7 @@ async function getAll(req, res, next) {
 
 
 async function getList(req, res) {
+    console.log('aaa');
     let parentId = req.params.parentId == 'root' ? undefined : req.params.parentId;
     let from = Number(req.params.from);
     let page = Number(req.params.page);
@@ -55,6 +64,7 @@ async function postAddCategory(req, res, next) {
     Category.methods.add(name, parentId)
         .then(doc => {
             return res.json({
+                ok : 1,
                 message: 'Add category success',
                 data: doc
             });

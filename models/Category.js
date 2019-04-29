@@ -47,13 +47,21 @@ async function getList(parentId, from, page) {
     page = Number(page);
     let query = validate.validateRemove({parentId}, [undefined, 'all'])
     if(parentId === 'root') query.parentId = null;
-    return Category.find(query).skip(from).limit(page);
+    console.log(query);
+    return Category.find(query)
+    .populate('parentId')
+    .skip(from).limit(page);
+}
+
+async function setShow(ids, isShow) {
+    return Category.updateMany({_id : {$in : ids}}, {isShow : isShow});
 }
 
 Category.methods.getList = getList;
 Category.methods.remove = remove;
 Category.methods.add = add;
 Category.methods.edit = edit;
+Category.methods.setShow = setShow;
 
 // export module
 module.exports = Category;

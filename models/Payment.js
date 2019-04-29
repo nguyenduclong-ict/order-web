@@ -6,17 +6,23 @@ var schema = new Schema({
         type : String,
         required : true
     }, 
+    code : String,
     description : {
         type : String ,
         required : true
-    }
+    },
+    isShow : Boolean
 });
 
 var Payment = mongoose.model('Payment', schema);
 Payment.methods = {};
 
 Payment.methods.addPayment = (Payment) => {
-    return new Payment(Payment).save();
+
+    let payment =  new Payment(Payment);
+    payment.isShow = true;
+    return payment.save();
+    
 };
 
 // export module

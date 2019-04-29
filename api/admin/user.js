@@ -7,6 +7,18 @@ router.get('/list/:type-:from-:page', getListUserPage);
 router.get('/detail/:username', getUserByUsername );
 router.post('/block/:id', postBlock);
 router.post('/unblock/:id', postUnBlock);
+router.post('/change-block', postChangeBlock);
+
+function postChangeBlock(req, res) {
+    let ids = req.body.ids;
+    let isBlock = req.body.isBlock;
+
+
+    User.updateMany({_id : {$in : ids}}, {isBlock : isBlock })
+        .then(result => {
+            return res.json({ok : 1});
+        })
+}
 
 async function getListUserPage(req, res) {
     let type = req.param('type');
@@ -48,15 +60,18 @@ function postBlock (req, res)  {
             console.log(err);
             return res.json({
                 error: "Xay ra loi",
-                message: err.message
+                message: err.message,
+                ok : 0
             });
         } else {
             console.log('Block user ' + req.params.id + 'success!');
             return res.json({
                 message: 'Block success!',
-                result : true,
-                isBlock : true
+                isBlock : true,
+                ok : 1
             });
+
+
         }
     });
 };
@@ -73,6 +88,7 @@ function postUnBlock(req, res) {
         if (err) {
             console.log(err);
             return res.json({
+                ok : 0,
                 error: "Xay ra loi",
                 message: err.message
             });
@@ -80,8 +96,8 @@ function postUnBlock(req, res) {
             console.log('UnBlock user ' + req.params.id + 'success!');
             return res.json({
                 message: 'unBlock success!',
-                result : true,
-                isBlock : false
+                isBlock : false,
+                ok : 1
             });
         }
     });
