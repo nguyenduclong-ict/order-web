@@ -39,16 +39,7 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use('/api', bodyParser.json())
-// app.use(express.static('public'));
-app.use(express.static('build'));
-
-
-
-//
-app.get('/', (req, res) => {
-  return res.sendFile(path.join(__dirname,'build', 'index.html'));
-  //console.log(req.session);
-});
+app.use(express.static('public'));
 
 // setup router api
 var apiRouter = require('./api/router');
