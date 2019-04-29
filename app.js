@@ -39,12 +39,14 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use('/api', bodyParser.json())
-app.use(express.static('public'));
+// app.use(express.static('public'));
+app.use(express.static('build'));
+
 
 
 //
 app.get('/', (req, res) => {
-  res.send('API for foody');
+  return res.sendFile(path.join(__dirname,'build', 'index.html'));
   //console.log(req.session);
 });
 
@@ -67,6 +69,7 @@ app.use((err, req, res, next) => {
       });
   }
 });
+
 
 
 app.listen(port, a => {
