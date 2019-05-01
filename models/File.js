@@ -9,8 +9,8 @@ const validator = require('../helpers/Validator');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    owner: mongoose.Schema.Types.ObjectId, // User id
-    subOwner: [mongoose.Schema.Types.ObjectId], // Danh sách các docoment liên quan khác
+    owner: {type : Schema.Types.ObjectId, ref : 'User'}, // User id
+    subOwner: [Schema.Types.ObjectId], // Danh sách các docoment liên quan khác
     filename: String, // Tên file
     path: String, // Đường dẫn file 
     type: String, // Loai file

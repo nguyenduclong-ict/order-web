@@ -3,8 +3,8 @@ var Types = require('../helpers/MyMongoose').Types;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    owner : mongoose.Schema.Types.ObjectId, // User id
-    subOwner : [mongoose.Schema.Types.ObjectId],
+    owner : { type : Schema.Types.ObjectId, ref : 'User'}, // User id
+    subOwner : [Schema.Types.ObjectId],
     comment :  String,
     time : Date,
     isShow : Boolean

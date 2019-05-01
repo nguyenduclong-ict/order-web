@@ -5,22 +5,15 @@ const Cart = require('./Cart');
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  productId: {
-    // Link đến sản phẩm
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
+  productId: {type : Schema.Types.ObjectId, ref : 'Product', required : true},
   product: {
     // Dữ liệu của sản phẩm tại thời điểm đặt hàng
     name: String,
     description: String,
     price: Number, // Gia san pham
   },
-  providerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
-  discountId: mongoose.Schema.Types.ObjectId,
+  providerId: {type : Schema.Types.ObjectId, ref : 'User', required : true},
+  discountId: {type : Schema.Types.ObjectId, ref : 'Discount'},
   quantity: {
     // Số lượng đặt hàng
     type: Number,

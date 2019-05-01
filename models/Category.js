@@ -48,9 +48,12 @@ async function getList(parentId, from, page) {
     let query = validate.validateRemove({parentId}, [undefined, 'all'])
     if(parentId === 'root') query.parentId = null;
     console.log(query);
-    return Category.find(query)
-    .populate('parentId')
-    .skip(from).limit(page);
+    let result =  Category.find(query);
+    result.populate('parentId')
+    result.skip(from)
+    result.limit(page);
+
+    return result.exec();
 }
 
 async function setShow(ids, isShow) {

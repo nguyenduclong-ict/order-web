@@ -55,7 +55,7 @@ function postBlock (req, res)  {
     let query = {
         _id: req.params.id
     };
-    User.updateOne(query, {$set : {isBlock : true}}, (err) => {
+    User.updateOne(query, {isBlock : true}, (err) => {
         if (err) {
             console.log(err);
             return res.json({
@@ -84,7 +84,7 @@ function postUnBlock(req, res) {
         _id: req.params.id
     };
 
-    User.updateOne(query, {$set : {isBlock : false}}, (err) => {
+    User.updateOne(query, {isBlock : false} , (err) => {
         if (err) {
             console.log(err);
             return res.json({

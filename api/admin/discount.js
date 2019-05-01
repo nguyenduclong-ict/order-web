@@ -2,75 +2,126 @@
 const express = require("express");
 var router = express.Router();
 var Discount = require("../../models/Discount");
+var Product = require("../../models/Product");
 const validator = require("../../helpers/Validator");
 
 // Router
-router.get("/list/:from-:page-:productid-:categoryid", getList);
+router.get("/list/:from-:page-:product-:provider-:search", getList);
 router.get("/detail/:id", getDetail);
+router.get("/products/:name", getListProducts);
 router.post("/add", postAdd);
 router.post("/edit/:id", postEdit);
+router.post("/change-status", postChangeStatus);
+
+function getListProducts(req, res) {
+  let name = req.params.name;
+  name = name === "all" ? undefined : name.split("%20").join(" ");
+
+  Product.methods
+    .getListByName(name)
+    .then(result => {
+      return res.json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      return res.json([]);
+    });
+}
+
+// Change status multiplite
+function postChangeStatus(req, res) {
+  let { ids, status } = req.body;
+  Discount.methods
+    .changeStatus(ids, status)
+    .then(result => {
+      return res.json({ ok: 1 });
+    })
+    .catch(err => {
+      return res.json({ ok: 0, message: err.message });
+    });
+}
 
 // Danh sach loc - cac tham so productid , categoryid de 'all' de lay ra tat ca
 function getList(req, res) {
-  let from = req.params.from;
-  let page = req.params.page;
-  let product_id = req.params.productid;
-  let category_id = req.params.categoryid;
+  let { from, page, search } = req.params;
 
-  // query
-  let query = validator({ product_id, category_id }, ["all", undefined]);
+  product = req.params.product !== "all" ? req.params.product : undefined;
+  provider = req.params.provider !== "all" ? req.params.provider : undefined;
 
-  //
-  Discount.find(query, { skip: from, limit: page }, (err, docs) => {
-    res.staus(200).json(docs);
-  });
+  if (search !== "all") {
+    search = search.replace("%20", " ");
+    Discount.methods
+      .getListByName(from, page, search)
+      .then(list => {
+        console.log(list);
+        list = list.filter(e => {
+          let rs1 = e.products.some(e2 => e2.name.includes(search));
+          let rs2 = e.providers.some(e2 => e2.name.includes(search));
+          console.log(rs1 && rs2);
+          return rs1 && rs2;
+        });
+        console.log(list);
+        res.json(list);
+      })
+      .catch(err => {
+        console.log("Error", err);
+        return res.json([]);
+      });
+  } else {
+    Discount.methods
+      .getList(from, page, product, provider)
+      .then(result => {
+        console.log(result);
+        return res.json(result);
+      })
+      .catch(err => {
+        return res.json([]);
+      });
+  }
 }
 
 function getDetail(req, res) {
   console.log("get Discount by id : " + req.params.id);
   let id = req.params.id;
-  Discount.findOne(
-    {
-      _id: id
-    },
-    (err, docs) => {
-      if (docs) res.json(docs);
-      else
-        res.json({
-          error: "Discount khong ton tai"
-        });
-    }
-    );
+  Discount.findOne({ _id: id })
+    .then(result => {
+      return res.json(result);
+    })
+    .catch(err => {
+      return res.json({
+        error: "Discount khong ton tai"
+      });
+    });
 }
 
 // Add Discount
-function postAdd (req, res)  {
+function postAdd(req, res) {
   let data = req.body;
-  console.log(data);
-  let discount = new Discount(data);
-  discount.save()
-    .then(doc => {
-      return res.json({ message: "Add Discount success", data: doc });
+  data.status = true;
+  Discount.methods
+    .addDiscount(data.startDate, data.endDate, data.status, data.value, data.products)
+    .then(result => {
+      return res.json({ ok: 1 });
     })
     .catch(err => {
-      return res.json({ error: true, message: err.message });
+      console.log(err);
+      return res.json({ ok: 0 });
     });
-};
+}
 
 // Edit Discount
-function postEdit (req, res) {
-  let query = { _id: req.params.id };
+function postEdit(req, res) {
   let data = req.body;
+  data._id = req.params._id;
   console.log(data);
-
-  Discount.updateOne(query, data, err => {
-    if (err) {
+  Discount.methods
+    .editDiscount(data)
+    .then(result => {
+      return res.json({ ok: 1 });
+    })
+    .catch(err => {
       console.log(err);
-      return res.json({ error: "Xay ra loi", message: err.message });
-    } else {
-      console.log("Update Discount " + req.params.id + "success!");
-      return res.json({ message: "update success!" });
-    }
-  });
-};
+      return res.json({ ok: 0 });
+    });
+}
 module.exports = router;

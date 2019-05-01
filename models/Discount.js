@@ -1,38 +1,130 @@
-const mongoose = require('../helpers/MyMongoose').mongoose;
-
+const mongoose = require("../helpers/MyMongoose").mongoose;
+const validator = require("../helpers/Validator");
 var Schema = mongoose.Schema;
+const Product = require("../models/Product");
+
 var schema = new Schema({
-    startDate: { // Ngày bắt đẩu áp dụng
-        type: Date,
-        required: true
+  startDate: {
+    // Ngày bắt đẩu áp dụng
+    type: Date,
+    required: true,
+    default: Date.now()
+  },
+  endDate: {
+    // ngày hết hạn
+    type: Date,
+    required: true,
+    default: Date.now()
+  },
+  status: {
+    type: Boolean, // Co the ap dung khong?
+    default: true
+  },
+  value: {
+    // Phần trăm giảm giá
+    type: Number,
+    required: () => {
+      return this.value > 0;
     },
-    endDate: { // ngày hết hạn
-        type: Date,
-        required: true
-    },
-    status: Boolean, // Co the ap dung khong?
-    value: { // Phần trăm giảm giá
-        type: Number,
-        required: () => {
-            return this.value > 0;
-        },
-        default: 0
-    },
-    type: { // Áp dụng cho 1 sản phẩm hay  1 nhóm sản phẩm
-        type: String,
-        enum: ['single', 'group'],
-        required: [true, 'type required!']
-    },
-    productId: [mongoose.Schema.Types.ObjectId], // Nếu áp dụng cho 1 sản phẩm nhất định,
-    categoryId: [mongoose.Schema.Types.ObjectId] // Nếu áp dụng cho 1 nhóm sản phẩm
+    default: 0
+  },
+  products: [
+    // Những sản phẩm được áp dụng
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      default: []
+    }
+  ],
+  providers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: []
+    }
+  ]
 });
-var Discount = {};
-Discount = mongoose.model('Discount', schema);
+// var Discount = {};
+var Discount = mongoose.model("Discount", schema);
 Discount.methods = {};
 
-Discount.methods.addDiscount = (Discount) => {
-    return new Discount(Discount).save();
+Discount.methods.addDiscount = Discount => {
+  return new Discount(Discount).save();
 };
+
+function getDetail(_id) {
+  let result = Discount.findOne({ _id: _id })
+    .populate("products")
+    .populate("prividers");
+  return result.exec();
+}
+
+Discount.methods.getList = function getList(from, page, product, provider) {
+  from = Number(from);
+  page = Number(page);
+  let products = product ? { $all: [product] } : { $exists: true };
+  let providers = provider ? { $all: [provider] } : { $exists: true };
+  console.log(products, providers);
+  let result = Discount.find({
+    $or: [{ products }, { providers }]
+  })
+    .populate("products")
+    .populate("providers")
+    .skip(from)
+    .limit(page);
+  return result.exec();
+};
+
+Discount.methods.getListByName = async (from, page, search) => {
+  from = Number(from);
+  page = Number(page);
+  return Discount.find()
+    .populate("products")
+    .populate("providers")
+    .exec();
+};
+
+async function editDiscount(data) {
+  data.providers = Products.find({ _id: { $in: data.products } }, [
+    "providerId"
+  ]).exec();
+  return Discount.updateOne({ _id: data._id }, data);
+}
+
+function changeStatus(ids, status) {
+  ids = Array.isArray(ids) ? ids : [];
+  return Discount.update(
+    {
+      _id: { $in: ids }
+    },
+    { status: status }
+  );
+}
+
+async function addDiscount(startDate, endDate, status, value, products) {
+  let arr = await Product.find({ _id: { $in: products } }, [
+    "providerId"
+  ]).lean();
+  let providers = [];
+  arr.forEach(e => {
+    providers.push(e.providerId);
+  });
+  console.log(providers);
+  let newDiscount = new Discount({
+    startDate,
+    endDate,
+    status,
+    value,
+    products,
+    providers
+  });
+  return newDiscount.save();
+}
+
+Discount.methods.editDiscount = editDiscount;
+Discount.methods.addDiscount = addDiscount;
+Discount.methods.getDetail = getDetail;
+Discount.methods.changeStatus = changeStatus;
 
 // export module
 module.exports = Discount;

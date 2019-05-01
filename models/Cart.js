@@ -4,15 +4,17 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
     ssid : String, // session id cho guest
     userId : { // userId cho user
-        type: mongoose.Schema.Types.ObjectId,
+        type:Schema.Types.ObjectId,
+        ref : 'User',
         required: true
     },
     orders : [
         {
             stt : Number,
             productId: { // Link đến sản phẩm
-                type: mongoose.Schema.Types.ObjectId,
-                required: true
+                type: Schema.Types.ObjectId,
+                required: true,
+                ref : 'Product'
             }, 
             quantity: { // Số lượng đặt hàng
                 type: Number,

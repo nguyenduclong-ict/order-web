@@ -2,7 +2,7 @@ const mongoose = require("../helpers/MyMongoose").mongoose;
 var Schema = mongoose.Schema;
 
 var schema = new Schema({
-  orderDetails: [mongoose.Schema.Types.ObjectId],
+  orderDetails: [{type : Schema.Types.ObjectId, ref : 'OrderDetail'}],
   totalPay: Number,
   status: [
     {
@@ -19,11 +19,8 @@ var schema = new Schema({
       }
     }
   ],
-  paymentId: mongoose.Schema.Types.ObjectId,
-  customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
-  },
+  paymentId: {type : Schema.Types.ObjectId, ref : 'Payment'},
+  customerId: {type : Schema.Types.ObjectId, ref : 'User'},
   created: Date
 });
 
