@@ -13,7 +13,6 @@ function postChangeBlock(req, res) {
     let ids = req.body.ids;
     let isBlock = req.body.isBlock;
 
-
     User.updateMany({_id : {$in : ids}}, {isBlock : isBlock })
         .then(result => {
             return res.json({ok : 1});

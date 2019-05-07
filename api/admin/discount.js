@@ -26,7 +26,7 @@ function getListProducts(req, res) {
       console.log(err);
       return res.json([]);
     });
-}
+};
 
 // Change status multiplite
 function postChangeStatus(req, res) {
@@ -78,12 +78,12 @@ function getList(req, res) {
         return res.json([]);
       });
   }
-}
+};
 
 function getDetail(req, res) {
   console.log("get Discount by id : " + req.params.id);
   let id = req.params.id;
-  Discount.findOne({ _id: id })
+  Discount.methods.getDetail(id)
     .then(result => {
       return res.json(result);
     })

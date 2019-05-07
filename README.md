@@ -79,6 +79,17 @@ post: /api/admin/user/block/:id
 ```
 post: /api/admin/user/unblock/:id
 ```
+
+##### Thay đổi trạng thái của nhiều người dùng
+```
+post: /api/admin/user/change-block
+
+body : {
+    ids : [], // Danh sach userId cua user muon thay doi trang thai
+    isBlock : boolean // Trang thai tai khoan 
+}
+```
+
 #### Router Admin for Category
 ##### Lấy danh sách Category
 ```
@@ -98,7 +109,19 @@ body : {
 }
 ```
 ##### Sửa Category
+```
 post: /api/admin/category/edit/:id
+```
+##### Chinh sua trang thai cua category
+```
+post : /api/admin/category/set-show
+
+body : {
+    ids : [] , // Mang cac id cua category
+    isShow : boolean // Trang thai hien thi cua category
+}
+```
+#####
 #### Router Admin Discount
 ##### Lấy danh sách
 ```
@@ -124,7 +147,20 @@ body = {
 ```
 ##### Sửa
 ```
-get: /api/admin/discount/edit/:id
+post: /api/admin/discount/edit/:id
+```
+
+##### Lay danh sach discount theo ten san pham
+```
+get: /products/:name 
+```
+##### Thay doi trang thai cua ma giam gia
+```
+post: /change-status
+body : {
+    ids : [],
+    status : boolean
+}
 ```
 #### Router quản lý phương thức thanh toán
 ##### Lấy danh sách
@@ -147,6 +183,15 @@ body = {
     description // String
 }
 ```
+##### Thay doi trang thai
+```
+post: /change-display
+body = {
+    ids : [], // mang cac id
+    isShow : boolean 
+}
+```
+
 #### Router Cart
 ##### Lấy thông tin giỏ hàng
 ```
