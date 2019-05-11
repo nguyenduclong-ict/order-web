@@ -78,10 +78,21 @@ Discount.methods.getList = function getList(from, page, product, provider) {
 Discount.methods.getListByName = async (from, page, search) => {
   from = Number(from);
   page = Number(page);
+  let regex = new RegExp(search, "gi");
+
   return Discount.find()
     .populate("products")
-    .populate("providers")
-    .exec();
+    .populate("providers", "info")
+    .exec()
+    .then(list => {
+      // console.log(list);
+      list = list.filter(e => {
+        let rs1 = e.products.some(e2 => e2.name.match(regex));
+        let rs2 = e.providers.some(e2 => e2.info.name.match(regex));
+        return rs1 || rs2;
+      });
+      return list;
+    });
 };
 
 async function editDiscount(data) {

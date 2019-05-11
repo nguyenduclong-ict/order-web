@@ -26,7 +26,7 @@ function getListProducts(req, res) {
       console.log(err);
       return res.json([]);
     });
-};
+}
 
 // Change status multiplite
 function postChangeStatus(req, res) {
@@ -53,20 +53,12 @@ function getList(req, res) {
     Discount.methods
       .getListByName(from, page, search)
       .then(list => {
-        console.log(list);
-        list = list.filter(e => {
-          let rs1 = e.products.some(e2 => e2.name.includes(search));
-          let rs2 = e.providers.some(e2 => e2.name.includes(search));
-          console.log(rs1 && rs2);
-          return rs1 && rs2;
-        });
-        console.log(list);
-        res.json(list);
+        return res.json(list);
       })
       .catch(err => {
-        console.log("Error", err);
-        return res.json([]);
-      });
+        console.log(err);
+        return res.json([])
+      })
   } else {
     Discount.methods
       .getList(from, page, product, provider)
@@ -78,12 +70,13 @@ function getList(req, res) {
         return res.json([]);
       });
   }
-};
+}
 
 function getDetail(req, res) {
   console.log("get Discount by id : " + req.params.id);
   let id = req.params.id;
-  Discount.methods.getDetail(id)
+  Discount.methods
+    .getDetail(id)
     .then(result => {
       return res.json(result);
     })
@@ -99,7 +92,13 @@ function postAdd(req, res) {
   let data = req.body;
   data.status = true;
   Discount.methods
-    .addDiscount(data.startDate, data.endDate, data.status, data.value, data.products)
+    .addDiscount(
+      data.startDate,
+      data.endDate,
+      data.status,
+      data.value,
+      data.products
+    )
     .then(result => {
       return res.json({ ok: 1 });
     })

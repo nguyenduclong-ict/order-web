@@ -3,7 +3,6 @@ class NError extends Error {
         super(message);
         this.code = code;
     }
-
 }
 
 module.exports = NError;

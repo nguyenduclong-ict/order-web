@@ -2,8 +2,13 @@ const express = require("express");
 var router = express.Router();
 var Product = require("../../models/Product");
 const File = require("../../models/File");
+// Lay thong tin chi tiet cua 1 san pham
+router.get("/detail/:id", getProductDetail);
+router.get("/list", getList);
+router.post("/add", postAddProduct);
+router.post("/edit/:id", postEdit);
 
-router.get("/list", (req, res) => {
+function getList(req, res) {
   let { from, page, category, name } = req.query;
   let provider = req.user._id;
 
@@ -17,10 +22,7 @@ router.get("/list", (req, res) => {
       console.log(error);
       return res.status(500).send(error.message);
     });
-});
-
-// Lay thong tin chi tiet cua 1 san pham
-router.get("/detail/:id", getProductDetail);
+}
 
 async function getProductDetail(req, res) {
   let id = req.query.id;
@@ -38,7 +40,8 @@ async function getProductDetail(req, res) {
 }
 
 // Add Product
-router.post("/add", (req, res) => {
+
+function postAddProduct(req, res) {
   let data = req.body;
   data.providerId = req.user._id;
   console.log(data);
@@ -57,10 +60,11 @@ router.post("/add", (req, res) => {
         message: err.message
       });
     });
-});
+}
 
 // Edit Product
-router.post("/edit/:id", (req, res) => {
+
+function postEdit(req, res) {
   let data = req.body;
   let providerId = req.user._id;
   let id = req.params.id;
@@ -78,6 +82,6 @@ router.post("/edit/:id", (req, res) => {
         message: err.message
       });
     });
-});
+}
 
 module.exports = router;
