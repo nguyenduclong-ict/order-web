@@ -42,10 +42,10 @@ async function remove(_id) {
 }
 
 // Lấy danh sách theo parenId
-async function getList(parentId, from, page) {
+async function getList(parentId, from, page, isShow = 'all') {
     from = Number(from);    
     page = Number(page);
-    let query = validate.validateRemove({parentId}, [undefined, 'all'])
+    let query = validate.validateRemove({parentId, isShow}, [undefined, 'all'])
     if(parentId === 'root') query.parentId = null;
     console.log(query);
     let result =  Category.find(query);

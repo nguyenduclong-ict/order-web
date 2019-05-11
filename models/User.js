@@ -50,10 +50,13 @@ var User = {};
 User = mongoose.model("User", schema);
 User.methods = {};
 User.methods.addUser = addUser;
+
+
 function addUser(data) {
   let user = new User(data);
   return user.save();
 }
+
 User.methods.getUser = async function(email) {
   console.log(email);
   return User.aggregate([

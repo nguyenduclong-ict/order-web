@@ -48,19 +48,25 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (providerId, categoryId, from, page) => {
-  from = Number(from);
-  page = Number(page);
-  query = validate.validateRemove({ providerId, categoryId }, [
-    undefined,
-    "all"
+Product.methods.getList = async (
+  providerId,
+  categoryId,
+  name,
+  isShow = true,
+  from,
+  page
+) => {
+  query = validate.validateRemove({ providerId, categoryId, isShow }, [
+    undefined
   ]);
+  if (name) query.name = new RegExp(`/${name}/`);
   console.log("Query", query);
   query.isShow = false;
-  return Product.find(query)
-    .populate("categoryId")
-    .skip(from)
-    .limit(page);
+  let result = Product.find(query);
+  if (from) result.skip(Number(from));
+  if (page) result.limit(Number(page));
+  result.populate("categoryId", "name");
+  result.populate("ProviderId", "name");
 };
 
 Product.methods.getListByName = name => {
@@ -68,5 +74,31 @@ Product.methods.getListByName = name => {
   else return Product.find();
 };
 
+async function reduceQuantity(ids, values) {
+  return Promise.all(
+    ids.map((id, index) =>
+      Product.updateOne({ _id: id }, { $inc: { quantity: -values[index] } })
+    )
+  );
+}
+
+function getDetail(id, provider, isShow) {
+  let query = validate.validateRemove(
+    { _id: id, isShow, providerId: provider },
+    [undefined]
+  );
+  return Product.findOne(query)
+    .populate("providerId", "name")
+    .populate("categoryId", "name");
+}
+
+function updateProduct(id, providerId, newProduct) {
+  let query = {_id : id, providerId}
+  return Product.updateOne(query, newProduct);
+}
+
+Product.methods.reduceQuantity = reduceQuantity;
+Product.methods.getDetail = getDetail;
+Product.methods.updateProduct = updateProduct;
 // export module
 module.exports = Product;

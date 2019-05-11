@@ -4,6 +4,8 @@
 > Base url : http://food.negoo.tech hoặc http://35.198.211.251:2306 
 > add token to headers.Authorization theo định dạng Bearer + token
 
+
+<!-- Router chung -->
 ### 1. Router chung
 #### Router Register
 ```
@@ -61,7 +63,12 @@ get: /api/category/list/:from-:page:-parent
 ```
 get: /api/customer/product/list/:from-:page:-category-:provider
 ```
-### 3. Router Admin
+<!-- ##End Router chung -->
+
+<!-- Router Admin -->
+### 2. Router Admin
+
+<!-- Admin User -->
 #### Router admin/user
 ##### Lấy danh sách tài khoản, type=all để lấy tất cả các loại tài khoản
 ```
@@ -89,7 +96,9 @@ body : {
     isBlock : boolean // Trang thai tai khoan 
 }
 ```
+<!-- #End Admin User -->
 
+<!-- Admin Category -->
 #### Router Admin for Category
 ##### Lấy danh sách Category
 ```
@@ -121,7 +130,9 @@ body : {
     isShow : boolean // Trang thai hien thi cua category
 }
 ```
-#####
+<!-- #End Admin Category -->
+
+<!-- Admin Discount -->
 #### Router Admin Discount
 ##### Lấy danh sách
 ```
@@ -136,7 +147,7 @@ get: /api/admin/discount/detail/:id
 get: /api/admin/discount/add
 body = {
     startdate,
-    endDate,
+    #EndDate,
     status, // 0 hoặc 1
     value,
     type : ['single', 'group'], // Áp dụng cho 1 sản phẩm hay  1 nhóm sản phẩm
@@ -162,6 +173,10 @@ body : {
     status : boolean
 }
 ```
+<!-- #End Admin Discount -->
+
+
+<!-- Admin Payment -->
 #### Router quản lý phương thức thanh toán
 ##### Lấy danh sách
 ```
@@ -192,6 +207,23 @@ body = {
 }
 ```
 
+#### Router Admin Logs
+##### Get list
+```
+get: /api/admin/log
+query agrument : from, page, type, sort (0|1)
+```
+#### get detail
+```
+get: /api/admin/log/:id
+```
+<!-- #End Admin Payment -->
+<!-- #End Router Admin -->
+
+<!-- Router Customer -->
+### 3. Router Customer
+
+<!-- Customer Cart -->
 #### Router Cart
 ##### Lấy thông tin giỏ hàng
 ```
@@ -210,3 +242,10 @@ body : {
 post /api/cart/delete-from-cart/:id
 // id la id cua đơn hàng trong giỏ hàng
 ``` 
+
+<!-- #End Customer Cart -->
+<!-- #End Router Customer -->
+
+<!-- Router Provider -->
+
+<!-- #End Router Provider -->

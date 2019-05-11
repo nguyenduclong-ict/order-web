@@ -46,16 +46,16 @@ async function postEditInfo(req, res) {
         address : req.body.address,
         phone : req.body.phone
     }
-    console.log(data);
+    console.log(info);
     User.updateOne({_id : user._id}, {$set : {info  : info}})
     .exec() 
     .then(result=> {
         console.log('Update User ', user.username, result);
-        res.status(200).send('Update thanh cong');
+        res.status(200).send({ ok : 1, message  : 'Update Success' });
     })
     .catch(error => {
         console.log(error);
-        return res.status(500).send('Update that bai');
+        return res.status(500).send({ message : 'Update Failure' });
     });
 
 }
