@@ -4,7 +4,7 @@ var router = express.Router();
 var Category = require('../models/Category');
 
 router.get('/list/:from-:page-:parent', getListCategory);
-
+router.get('/list', getList);
 
 async function getListCategory(req, res) {
     let {from , page } = req.params;
@@ -18,5 +18,14 @@ async function getListCategory(req, res) {
     });
 };
 
-
+async function getList(req, res) {
+    Category.methods.getListAll() 
+        .then(list =>{
+            return res.json(list);
+        })
+        .catch(e => {
+            console.log(e);
+            return res.status(500).json({message : "Lỗi"})
+        })
+}
 module.exports = router;

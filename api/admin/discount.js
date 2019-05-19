@@ -111,7 +111,7 @@ function postAdd(req, res) {
 // Edit Discount
 function postEdit(req, res) {
   let data = req.body;
-  data._id = req.params._id;
+  data._id = req.params.id;
   console.log(data);
   Discount.methods
     .editDiscount(data)

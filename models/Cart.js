@@ -29,6 +29,8 @@ var schema = new Schema({
     ],
     
 });
+
+
 let Cart = {}
 Cart = mongoose.model('Cart', schema);
 Cart.methods = {};

@@ -3,7 +3,7 @@
 const express = require('express');
 var router = express.Router();
 var auth = require('../helpers/Auth');
-// redirect router
+// General router
 router.use('/login',  require('./login'));
 router.use('/logout',  require('./logout'));
 router.use('/register', require('./register'));
@@ -13,6 +13,7 @@ router.use('/file', auth.authFile, require('./file'));
 router.use('/token', auth.getInfoFromToken, require('./token'));
 router.use('/cart', require('./cart'));
 router.use('/test', require('./test'));
+router.use('/product', require('./product'));
 // Router admin
 router.use('/admin/*', auth.authAdmin);
 router.use('/admin/user',  require('./admin/user'));
@@ -28,6 +29,6 @@ router.use('/provider/product', require('./provider/product'));
 router.use('/provider/order', require('./provider/order'));
 
 // Router customer
-router.use('/customer/product', require('./customer/product'));
+router.use('/customer/order', auth.authCustomer, require('./customer/order'));
 
 module.exports = router;

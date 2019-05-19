@@ -9,6 +9,10 @@ var schema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         default: null
     },
+    order : {
+        type : Number ,
+        default : 0
+    },
     isShow : Boolean
 });
 var Category = {};
@@ -27,12 +31,10 @@ function add(name, parentId) {
 
 // Chỉnh sửa
 async function edit(id, name, parentId) {
-    let data = {};
-    if (name) data.name = name;
-    if (parentId) data.parentId = parentId;
+    console.log(id, name, parentId);
     return Category.updateOne({
-        _id: id
-    }, data);
+        _id : id
+    }, {name : name ,parentId :parentId});
 }
 
 async function remove(_id) {
@@ -56,6 +58,11 @@ async function getList(parentId, from, page, isShow = 'all') {
     return result.exec();
 }
 
+// Lấy toàn bộ danh sách
+async function getListAll() {
+    return Category.find({isShow : true});
+}
+
 async function setShow(ids, isShow) {
     return Category.updateMany({_id : {$in : ids}}, {isShow : isShow});
 }
@@ -65,6 +72,7 @@ Category.methods.remove = remove;
 Category.methods.add = add;
 Category.methods.edit = edit;
 Category.methods.setShow = setShow;
+Category.methods.getListAll = getListAll;
 
 // export module
 module.exports = Category;

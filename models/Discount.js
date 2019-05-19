@@ -96,9 +96,12 @@ Discount.methods.getListByName = async (from, page, search) => {
 };
 
 async function editDiscount(data) {
-  data.providers = Products.find({ _id: { $in: data.products } }, [
+  data.products = data.products.map(e => e._id);
+  data.providers = await Product.find({ _id: { $in: data.products } }, [
     "providerId"
   ]).exec();
+  data.providers = data.providers.map(e => e.providerId);
+  console.log(data);
   return Discount.updateOne({ _id: data._id }, data);
 }
 

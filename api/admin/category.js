@@ -12,10 +12,10 @@ router.post('/edit/:id', postEditCategory);
 router.post('/set-show', postSetShow);
 
 function postSetShow(req, res) {
-    let {ids, isShow} = req.body;
-    Category.methods.setShow(ids,isShow)
+    let { ids, isShow } = req.body;
+    Category.methods.setShow(ids, isShow)
         .then(result => {
-            return res.json({ok : 1, isShow : isShow});
+            return res.json({ ok: 1, isShow: isShow });
         })
 }
 
@@ -34,16 +34,16 @@ async function getList(req, res) {
     let parentId = req.params.parentId == 'root' ? undefined : req.params.parentId;
     let from = Number(req.params.from);
     let page = Number(req.params.page);
-    Category.methods.getList(parentId,from,page)
-    .then(result => {
-        return res.json(result);
-    })
-    .catch(error => {
-        return res.status(500).json({message : 'Lỗi'});
-    });
+    Category.methods.getList(parentId, from, page)
+        .then(result => {
+            return res.json(result);
+        })
+        .catch(error => {
+            return res.status(500).json({ message: 'Lỗi' });
+        });
 };
 
- function getDetail  (req, res) {
+function getDetail(req, res) {
     console.log('get Category by id : ' + req.params.id);
     let CategoryId = req.params.id;
     Category.findOne({
@@ -64,7 +64,7 @@ async function postAddCategory(req, res, next) {
     Category.methods.add(name, parentId)
         .then(doc => {
             return res.json({
-                ok : 1,
+                ok: 1,
                 message: 'Add category success',
                 data: doc
             });
@@ -77,15 +77,16 @@ async function postAddCategory(req, res, next) {
 // Edit Category
 function postEditCategory(req, res, next) {
 
-    let categoryId =
-        let.params.id;
+    let categoryId = req.params.id;
     let name = req.body.name;
     let parentId = req.body.parentId;
+
 
     Category.methods.edit(categoryId, name, parentId)
         .then(result => {
             console.log(result);
             return res.json({
+                ok :1,
                 message: "Update Success!"
             });
         })

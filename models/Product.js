@@ -48,25 +48,28 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (
-  providerId,
-  categoryId,
-  name,
-  isShow = true,
-  from,
-  page
-) => {
-  query = validate.validateRemove({ providerId, categoryId, isShow }, [
-    undefined
-  ]);
-  if (name) query.name = new RegExp(`/${name}/`);
+Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sortf, sortv) => {
+  query = validate.validateRemove({ providerId, categoryId, name, isShow }, [undefined]);
+  if (name) query.name = new RegExp(`${name}`);
+
+  // Sort
+  console.log(sortf, sortv);
+  
+  if(sortf) sortf = sortf.split(" ");
+  if(sortv) sortv = sortv.split(" ");
+  let sort = {};
+  for (let i = 0; i < sortf.length; i++) {
+    sort[sortf[i]] = sortv[i] || 1;
+  }
+  console.log(sort);
   console.log("Query", query);
-  query.isShow = false;
   let result = Product.find(query);
   if (from) result.skip(Number(from));
   if (page) result.limit(Number(page));
   result.populate("categoryId", "name");
-  result.populate("ProviderId", "name");
+  result.populate("providerId", "info _id ");
+  result.sort(sort);
+  return result.exec();
 };
 
 Product.methods.getListByName = name => {
@@ -75,25 +78,18 @@ Product.methods.getListByName = name => {
 };
 
 async function reduceQuantity(ids, values) {
-  return Promise.all(
-    ids.map((id, index) =>
-      Product.updateOne({ _id: id }, { $inc: { quantity: -values[index] } })
-    )
-  );
+  return Promise.all(ids.map((id, index) => Product.updateOne({ _id: id }, { $inc: { quantity: -values[index] } })));
 }
 
 function getDetail(id, provider, isShow) {
-  let query = validate.validateRemove(
-    { _id: id, isShow, providerId: provider },
-    [undefined]
-  );
+  let query = validate.validateRemove({ _id: id, isShow, providerId: provider }, [undefined]);
   return Product.findOne(query)
     .populate("providerId", "name")
     .populate("categoryId", "name");
 }
 
 function updateProduct(id, providerId, newProduct) {
-  let query = {_id : id, providerId}
+  let query = { _id: id, providerId };
   return Product.updateOne(query, newProduct);
 }
 
