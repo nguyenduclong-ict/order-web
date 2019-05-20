@@ -12,8 +12,8 @@ const OrderDetail = require("../../models/OrderDetail");
 const Cart = require("../../models/Cart");
 
 // Setup router
-router.post("/add", postAddOrder);
 router.get("/list", getListOrder);
+router.post("/add", postAddOrder);
 router.post("/cancel-order", postCancelOrder);
 router.post("/add-to-cart", postAddToCart);
 router.post("/success-order", postSuccessOrder);
@@ -87,8 +87,7 @@ async function getListOrder(req, res) {
  */
 async function postCancelOrder(req, res) {
   let userId = req.user._id;
-  let orderId = req.body.orderId;
-  let comment = req.body.comment;
+  let { orderId, comment } = req.body;
   Order.methods
     .refuseOrderForUser(orderId, userId, comment)
     .then(() => {

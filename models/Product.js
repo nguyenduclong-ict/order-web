@@ -54,9 +54,9 @@ Product.methods.getList = async (providerId, categoryId, name, isShow = true, fr
 
   // Sort
   console.log(sortf, sortv);
-  
-  if(sortf) sortf = sortf.split(" ");
-  if(sortv) sortv = sortv.split(" ");
+
+  if (sortf) sortf = sortf.split(" ");
+  if (sortv) sortv = sortv.split(" ");
   let sort = {};
   for (let i = 0; i < sortf.length; i++) {
     sort[sortf[i]] = sortv[i] || 1;
