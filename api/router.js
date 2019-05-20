@@ -11,7 +11,7 @@ router.use('/category', require('./category'));
 router.use('/upload', auth.getInfoFromToken, require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
 router.use('/token', auth.getInfoFromToken, require('./token'));
-router.use('/cart', require('./cart'));
+router.use('/cart', require('./customer/cart'));
 router.use('/test', require('./test'));
 router.use('/product', require('./product'));
 // Router admin

@@ -1,7 +1,8 @@
 const mongoose = require("../helpers/MyMongoose").mongoose;
 var Types = require("../helpers/MyMongoose").Types;
-
+const Log = require("./Log");
 const validate = require("../helpers/Validator");
+const Category = require("./Category");
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
@@ -52,12 +53,18 @@ Product.methods = {};
 Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sort) => {
   query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (name) query.name = new RegExp(`${name}`);
-  if(categoryId) {
-    arr = categoryId.split("|").filter(e => e!=="");
+
+  // Dieu kien tim kiếm theo category
+  if (categoryId) {
+    arr = categoryId.split("|").filter(e => e !== "");
+    let arr2 = await Category.find({parentId : {$in : arr}})
+    arr2 = [ ...arr,... arr2.map(e => e._id.toString())]
     query.categoryId = {
-      $in : arr
-    }
+      $in: arr2
+    };
   }
+
+  // Sort
   if (sort) {
     let arr = sort.split("|").filter(e => e !== "");
     sort = {};
@@ -67,9 +74,7 @@ Product.methods.getList = async (providerId, categoryId, name, isShow = true, fr
   } else {
     sort = {};
   }
-  console.log(sort);
-
-  console.log("Query", query);
+  console.debug("Query", query , 'Sort ', sort);
   let result = Product.find(query);
   if (from) result.skip(Number(from));
   if (page) result.limit(Number(page));
@@ -96,12 +101,22 @@ function getDetail(id, provider, isShow) {
 }
 
 function updateProduct(id, providerId, newProduct) {
+  if (newProduct.ordered) delete newProduct.ordered;
   let query = { _id: id, providerId };
+  Log.methods.addLog("Update Product", newProduct, "update");
   return Product.updateOne(query, newProduct);
+}
+
+function addProduct(data) {
+  if (data.ordered) delete data.ordered;
+  let product = new Product(data);
+  Log.methods.addLog("Add Product", product, "create");
+  return product.save();
 }
 
 Product.methods.reduceQuantity = reduceQuantity;
 Product.methods.getDetail = getDetail;
 Product.methods.updateProduct = updateProduct;
+Product.methods.addProduct = addProduct;
 // export module
 module.exports = Product;

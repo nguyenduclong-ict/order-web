@@ -44,10 +44,7 @@ async function getProductDetail(req, res) {
 function postAddProduct(req, res) {
   let data = req.body;
   data.providerId = req.user._id;
-  console.log(data);
-  let product = new Product(data);
-  product
-    .save()
+  Product.methods.addProduct(data)
     .then(doc => {
       return res.status(200).json({
         message: "Add Product success",

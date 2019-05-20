@@ -82,7 +82,7 @@ get: /api/category/list/:from-:page:-parent
 get : /api/product/list
 query parametter :  from, page, category, provider, name, sort
 
-> sort : sort value , category : id category, neu co nhieu gia tri cach nhay bang | 
+> sort : sort value , category : id category, neu co nhieu gia tri cach nhay bang |
 > Ex : /api/product/list?sortf=price|1|quantity|-1 // sort theo price tăng dần và quantiy giảm dần
 ```
 
@@ -306,24 +306,25 @@ get: /api/admin/log/:id
 ##### Lấy thông tin giỏ hàng
 
 ```
-get /api/cart/cart-detail
+get /api/customer/cart
 ```
 
 ##### Thêm sản phẩm vào giỏ hàng
 
 ```
-post /api/cart/add-to-cart
+post /api/customer/cart/add-product
 body : {
-    productId,
-    quantity
+  products : [] // Mang cac product id 
 }
 ```
 
 ##### Xoa san phẩm khỏi giỏ hàng
 
 ```
-post /api/cart/delete-from-cart/:id
-// id la id cua đơn hàng trong giỏ hàng
+delete /api/customer/cart
+body : {
+  products : [] // Mang cac product id 
+}
 ```
 
 <!-- #End Customer Cart -->
@@ -334,13 +335,13 @@ post /api/cart/delete-from-cart/:id
 get   "/customer/order/list"
 ---
 post  "/customer/order/add"
-body : { 
+body : {
     products : [
         productId, // id của sản phẩm
         quantity // Số lượng
-    ], 
-    paymentId, 
-    discountIds 
+    ],
+    paymentId,
+    discountIds
 }
 ---
 post  "/customer/order/cancel-order"
@@ -361,6 +362,7 @@ body : {
 
 <!-- #End Router Customer -->
 <!-- Router Provider -->
+
 ### 4. Router Provider
 
 #### Router Provider Product
@@ -371,9 +373,8 @@ get "/provider/product/detail/:id"
 get "/provider/product/list"
 query : { from, page, category, name }
 ---
-post "/product/add"
+post "/provider/product/add"
 body : {
-  providerId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Người đăng
   categoryId: { type: Schema.Types.ObjectId, ref: "Category" },
   name: String,
   description: String,

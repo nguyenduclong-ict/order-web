@@ -1,71 +1,75 @@
-const mongoose = require('../helpers/MyMongoose').mongoose;
-var Types = require('../helpers/MyMongoose').Types;
-const validate = require('../helpers/Validator');
+const mongoose = require("../helpers/MyMongoose").mongoose;
+var Types = require("../helpers/MyMongoose").Types;
+const validate = require("../helpers/Validator");
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    name: String,
-    parentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: null
-    },
-    order : {
-        type : Number ,
-        default : 0
-    },
-    isShow : Boolean,
-    created: { type: Date, default: Date.now() }
+  name: String,
+  parentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null
+  },
+  order: {
+    type: Number,
+    default: 0
+  },
+  isShow: Boolean,
+  created: { type: Date, default: Date.now() }
 });
 var Category = {};
-Category = mongoose.model('Category', schema);
+Category = mongoose.model("Category", schema);
 Category.methods = {};
 
 // Thêm category
 function add(name, parentId) {
-    let data = {};
-    if (name) data.name = name;
-    if (parentId) data.parentId = parentId;
-    data.isShow = true;
-    let category = new Category(data);
-    return category.save();
+  let data = {};
+  if (name) data.name = name;
+  if (parentId) data.parentId = parentId;
+  data.isShow = true;
+  let category = new Category(data);
+  return category.save();
 }
 
 // Chỉnh sửa
 async function edit(id, name, parentId) {
-    console.log(id, name, parentId);
-    return Category.updateOne({
-        _id : id
-    }, {name : name ,parentId :parentId});
+  console.log(id, name, parentId);
+  return Category.updateOne(
+    {
+      _id: id
+    },
+    { name: name, parentId: parentId }
+  );
 }
 
 async function remove(_id) {
-    return Category.deleteOne({
-        _id: id
-    });
+  return Category.deleteOne({
+    _id: id
+  });
 }
 
 // Lấy danh sách theo parenId
-async function getList(parentId, from, page, isShow = 'all') {
-    from = Number(from);    
-    page = Number(page);
-    let query = validate.validateRemove({parentId, isShow}, [undefined, 'all'])
-    if(parentId === 'root') query.parentId = null;
-    console.log(query);
-    let result =  Category.find(query);
-    result.populate('parentId')
-    result.skip(from)
-    result.limit(page);
+async function getList(parentId, from = 0, page = 1000, isShow = "all") {
+  from = Number(from);
+  page = Number(page);
+  let query = validate.validateRemove({ parentId, isShow }, [undefined, "all"]);
+  if(parentId === 'null') query.parentId = null;
+  if (parentId && Array.isArray(parentId)) query.parentId = { $in: parentId };
+  console.log(query);
+  let result = Category.find(query);
+  result.populate("parentId");
+  result.skip(from);
+  result.limit(page);
 
-    return result.exec();
+  return result.exec();
 }
 
 // Lấy toàn bộ danh sách
 async function getListAll() {
-    return Category.find({isShow : true});
+  return Category.find({ isShow: true });
 }
 
 async function setShow(ids, isShow) {
-    return Category.updateMany({_id : {$in : ids}}, {isShow : isShow});
+  return Category.updateMany({ _id: { $in: ids } }, { isShow: isShow });
 }
 
 Category.methods.getList = getList;

@@ -20,7 +20,8 @@ function postSetShow(req, res) {
 }
 
 async function getAll(req, res, next) {
-    Category.find({})
+    let {parentId, from, page} = req.query;
+    Category.methods.getList(parentId, from,page)
         .then(docs => {
             console.log(docs);
             res.json(docs)
