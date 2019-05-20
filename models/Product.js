@@ -50,11 +50,16 @@ Product = mongoose.model("Product", schema);
 Product.methods = {};
 
 Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sort) => {
-  query = validate.validateRemove({ providerId, categoryId, name, isShow }, [undefined]);
+  query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (name) query.name = new RegExp(`${name}`);
-  
+  if(categoryId) {
+    arr = categoryId.split("|").filter(e => e!=="");
+    query.categoryId = {
+      $in : arr
+    }
+  }
   if (sort) {
-    let arr = sort.split("$").filter(e => e !== "");
+    let arr = sort.split("|").filter(e => e !== "");
     sort = {};
     for (let i = 0; i < arr.length; i = i + 2) {
       sort[arr[i]] = arr[i + 1];
