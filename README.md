@@ -331,9 +331,9 @@ post /api/cart/delete-from-cart/:id
 #### Router Customer Order
 
 ```
-get   "/list"
+get   "/customer/order/list"
 ---
-post  "/add"
+post  "/customer/order/add"
 body : { 
     products : [
         productId, // id của sản phẩm
@@ -343,16 +343,16 @@ body : {
     discountIds 
 }
 ---
-post  "/cancel-order"
+post  "/customer/order/cancel-order"
 body : { orderId, comment }
 ---
-post  "/add-to-cart"
+post  "/customer/order/add-to-cart"
 
 ---
-post  "/success-order"
+post  "/customer/order/success-order"
 body : { orderId, comment }
 ---
-post  "/change-product-count"
+post  "/customer/order/change-product-count"
 body : {
     orderDetailId, // Id của order detail
     quantity
@@ -360,14 +360,17 @@ body : {
 ```
 
 <!-- #End Router Customer -->
-
 <!-- Router Provider -->
+### 4. Router Provider
 
 #### Router Provider Product
 
 ```
 get "/provider/product/detail/:id"
+---
 get "/provider/product/list"
+query : { from, page, category, name }
+---
 post "/product/add"
 body : {
   providerId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Người đăng
@@ -408,9 +411,8 @@ body : {
     default: true
   }
 }
-
+---
 post "/provider/product/edit/:id"
-
 body : {
     // Giống add
 }
