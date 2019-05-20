@@ -16,7 +16,7 @@ var schema = new Schema({
     type: String, // Loai file
     tags: [String], // 
     isPublic: Boolean, // Co phai public khong
-    created: Date // Ngày tạoi 
+    created: { type: Date, default: Date.now() }
 });
 var File = {};
 File = mongoose.model('File', schema);

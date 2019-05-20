@@ -41,7 +41,8 @@ var schema = new Schema({
   isShow: {
     type: Boolean, // Hiển thị hoặc không hiển thị với người dùng
     default: true
-  }
+  },
+  created: { type: Date, default: Date.now() }
 });
 
 var Product = {};
@@ -53,14 +54,15 @@ Product.methods.getList = async (providerId, categoryId, name, isShow = true, fr
   if (name) query.name = new RegExp(`${name}`);
 
   // Sort
-  console.log(sortf, sortv);
+  console.log("Sortf | Sortv", sortf, sortv);
 
   if (sortf) sortf = sortf.split(" ");
   if (sortv) sortv = sortv.split(" ");
   let sort = {};
-  for (let i = 0; i < sortf.length; i++) {
-    sort[sortf[i]] = sortv[i] || 1;
-  }
+  if (sortf && sortv)
+    for (let i = 0; i < sortf.length; i++) {
+      sort[sortf[i]] = sortv[i] || 1;
+    }
   console.log(sort);
   console.log("Query", query);
   let result = Product.find(query);

@@ -27,7 +27,7 @@ var schema = new Schema({
             }
         }
     ],
-    
+    created: { type: Date, default: Date.now() }
 });
 
 

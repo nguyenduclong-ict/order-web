@@ -28,7 +28,8 @@ var schema = new Schema({
       validator: v => v > 0,
       message: props => `total pay must greater than 0!`
     }
-  }
+  },
+  created: { type: Date, default: Date.now() }
 });
 var OrderDetail = {};
 OrderDetail = mongoose.model("OrderDetail", schema);

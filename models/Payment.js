@@ -11,7 +11,8 @@ var schema = new Schema({
         type : String ,
         required : true
     },
-    isShow : Boolean
+    isShow : Boolean,
+    created: { type: Date, default: Date.now() }
 });
 
 var Payment = mongoose.model('Payment', schema);

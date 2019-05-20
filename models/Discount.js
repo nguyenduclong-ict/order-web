@@ -42,7 +42,8 @@ var schema = new Schema({
       ref: "User",
       default: []
     }
-  ]
+  ],
+  created: { type: Date, default: Date.now() }
 });
 // var Discount = {};
 var Discount = mongoose.model("Discount", schema);

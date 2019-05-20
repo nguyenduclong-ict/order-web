@@ -2,7 +2,8 @@ const mongoose = require('../helpers/MyMongoose').mongoose;
 
 var Schema = mongoose.Schema;
 var schema = new Schema({
-    value : String
+    value : String,
+    created: { type: Date, default: Date.now() }
 });
 
 var Token = {};

@@ -5,16 +5,12 @@ var schema = new Schema({
   title: String,
   content: String,
   type: String,
-  created: Date
+  created: { type: Date, default: Date.now() }
 });
 
 var Log = {};
 Log = mongoose.model("Log", schema);
 Log.methods = {};
-schema.pre("save", next => {
-  this.create = Date.now();
-  next();
-});
 
 Log.methods.addLog = (title, content, type) => {
   let newLog = new Log({ title, content, type });

@@ -7,7 +7,8 @@ var schema = new Schema({
     subOwner : [Schema.Types.ObjectId],
     comment :  String,
     time : Date,
-    isShow : Boolean
+    isShow : Boolean,
+    created: { type: Date, default: Date.now() }
 });
 
 var Comment;

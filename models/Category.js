@@ -13,7 +13,8 @@ var schema = new Schema({
         type : Number ,
         default : 0
     },
-    isShow : Boolean
+    isShow : Boolean,
+    created: { type: Date, default: Date.now() }
 });
 var Category = {};
 Category = mongoose.model('Category', schema);

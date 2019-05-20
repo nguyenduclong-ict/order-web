@@ -20,7 +20,8 @@ var schema = new Schema({
     name: String,
     address: String,
     phone: String
-  }
+  },
+  created: { type: Date, default: Date.now() }
 });
 
 schema.pre("save", function(next) {
