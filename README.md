@@ -82,8 +82,8 @@ get: /api/category/list/:from-:page:-parent
 get : /api/product/list
 query parametter :  from, page, category, provider, name, sortf, sortv\
 
-> sortf : field sort  , sortv : sort value
-> Ex : /api/product/list?sortf=price+quantity&sortv=1+-1 // sort theo price tăng dần và quantiy giảm dần
+> sort : sort value
+> Ex : /api/product/list?sortf=price$1$quantity$-1 // sort theo price tăng dần và quantiy giảm dần
 ```
 
 <!-- ##End Router chung -->

@@ -10,10 +10,10 @@ router.get("/list", getListProduct);
 router.get("/detail/:id", getDetail);
 
 async function getListProduct(req, res) {
-  let { from, page, category, provider, name, sortf, sortv } = req.query;
+  let { from, page, category, provider, name, sort } = req.query;
 
   Product.methods
-    .getList(provider, category, name, true, from, page, sortf, sortv)
+    .getList(provider, category, name, true, from, page, sort)
     .then(list => {
       console.log(list);
       return res.json(list);

@@ -49,21 +49,21 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sortf, sortv) => {
+Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sort) => {
   query = validate.validateRemove({ providerId, categoryId, name, isShow }, [undefined]);
   if (name) query.name = new RegExp(`${name}`);
-
-  // Sort
-  console.log("Sortf | Sortv", sortf, sortv);
-
-  if (sortf) sortf = sortf.split(" ");
-  if (sortv) sortv = sortv.split(" ");
-  let sort = {};
-  if (sortf && sortv)
-    for (let i = 0; i < sortf.length; i++) {
-      sort[sortf[i]] = sortv[i] || 1;
+  
+  if (sort) {
+    let arr = sort.split("$").filter(e => e !== "");
+    sort = {};
+    for (let i = 0; i < arr.length; i = i + 2) {
+      sort[arr[i]] = arr[i + 1];
     }
+  } else {
+    sort = {};
+  }
   console.log(sort);
+
   console.log("Query", query);
   let result = Product.find(query);
   if (from) result.skip(Number(from));
