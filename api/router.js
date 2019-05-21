@@ -11,7 +11,6 @@ router.use('/category', require('./category'));
 router.use('/upload', auth.getInfoFromToken, require('./upload'));
 router.use('/file', auth.authFile, require('./file'));
 router.use('/token', auth.getInfoFromToken, require('./token'));
-router.use('/cart', require('./customer/cart'));
 router.use('/test', require('./test'));
 router.use('/product', require('./product'));
 // Router admin
@@ -30,5 +29,6 @@ router.use('/provider/order', require('./provider/order'));
 
 // Router customer
 router.use('/customer/order', auth.authCustomer, require('./customer/order'));
+router.use('/customer/cart', require('./customer/cart'));
 
 module.exports = router;

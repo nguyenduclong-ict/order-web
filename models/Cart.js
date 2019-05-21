@@ -16,13 +16,15 @@ let Cart = {};
 Cart = mongoose.model("Cart", schema);
 Cart.methods = {};
 
-Cart.methods.newCart = Cart => {
-  return new Cart(Cart).save();
+Cart.methods.newCart = cart => {
+  return new Cart(cart).save();
 };
 
 Cart.methods.addToCart = async (userId, products) => {
   let cart = await Cart.findOne({ userId: userId });
-  cart.products = [...cart.products,products];
+  if (!cart) cart = await Cart.methods.newCart({ userId: userId, products: [] });
+  console.log(cart, products);
+  cart.products = [...cart.products, products];
   cart.products = [...new Set(cart.products)];
   return Cart.updateOne({ userId }, cart);
 };

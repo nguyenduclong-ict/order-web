@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Cart = require("../../models/Cart");
 const auth = require("../../helpers/Auth");
 
-router.get("/", getCart);
+router.get("/", auth.authCustomer, getCart);
 router.delete("/remove-product", auth.authCustomer, deleteProductFromCart);
 router.post("/add-product", auth.authCustomer, postAddToCart);
 
@@ -38,6 +38,7 @@ async function deleteProductFromCart(req, res) {
 async function postAddToCart(req, res) {
   let userId = req.user._id;
   let products = req.body.products;
+  console.log(req.body);
   Cart.methods
     .addToCart(userId, products)
     .then(result => {
