@@ -50,7 +50,7 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (providerId, categoryId, name, isShow = true, from, page, sort) => {
+Product.methods.getList = async (providerId, categoryId, name, isShow, from, page, sort) => {
   query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (name) query.name = new RegExp(`${name}`);
 
