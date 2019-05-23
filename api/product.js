@@ -10,10 +10,13 @@ router.get("/list", getListProduct);
 router.get("/detail/:id", getDetail);
 
 async function getListProduct(req, res) {
-  let { from, page, category, provider, name, sort } = req.query;
-
+  let { from, page, category, provider, name, sort, ids} = req.query;
+  // console.log(ids);
+  if (ids) ids = ids.split("|");
+  else ids = [];
+  // console.log(ids);
   Product.methods
-    .getList(provider, category, name, true, from, page, sort)
+    .getList(provider, category, name, true, from, page, sort, ids)
     .then(list => {
       console.log(list);
       return res.json(list);
@@ -25,9 +28,10 @@ async function getListProduct(req, res) {
 }
 
 async function getDetail(req, res) {
-  let id = req.query.id;
+  let id = req.params.id;
+  console.log(id);
   Product.methods
-    .getDetail(id, true)
+    .getDetail(id)
     .then(data => {
       console.log(data);
       return res.json(data);

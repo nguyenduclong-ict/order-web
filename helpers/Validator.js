@@ -7,4 +7,11 @@ validate.validateRemove = (obj = {}, match = []) => {
     return obj;
 }
 
+validate.validate = (obj = {}, match = []) => {
+    for(let key in obj) {
+        if(match.includes(obj[key])) return false;
+    }
+    return true;
+}
+
 module.exports = validate;

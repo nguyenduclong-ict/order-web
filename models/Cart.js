@@ -25,15 +25,17 @@ Cart.methods.addToCart = async (userId, products) => {
   if (!cart) cart = await Cart.methods.newCart({ userId: userId, products: [] });
   console.log(cart, products);
   cart.products = [...cart.products, products];
-  cart.products = [...new Set(cart.products)];
+  cart.products = cart.products.filter((e, i) => cart.products.findIndex(v => v.toString() === e.toString()) === i);
   return Cart.updateOne({ userId }, cart);
 };
 
 // Xoa san pham trong gio hang
 Cart.methods.removeFromCart = async (userId, products) => {
-  let cart = await Cart.findOne({ userId, userId });
-  cart = cart.productsfilter(e => !products.includes(e));
-  return Cart.updateOne({ userId: userId }, cart);
+  let cart = await Cart.findOne({ userId: userId }).lean();
+  console.log('models/Cart line 25 :', cart, products);
+  let n = cart.products.filter(e => !products.includes(e.toString()));
+  console.log(n);
+  return Cart.updateOne({ userId: userId }, { products: n });
 };
 
 /**
