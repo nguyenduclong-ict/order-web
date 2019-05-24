@@ -79,7 +79,7 @@ Product.methods.getList = async (providerId, categoryId, name, isShow, from, pag
     let arr = sort.split("|").filter(e => e !== "");
     sort = {};
     for (let i = 0; i < arr.length; i = i + 2) {
-      sort[arr[i]] = arr[i + 1];
+      sort[arr[i]] = Number(arr[i + 1]);
     }
   } else {
     sort = { _id: 1 };

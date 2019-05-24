@@ -11,6 +11,8 @@ router.get("/detail/:id", getDetail);
 
 async function getListProduct(req, res) {
   let { from, page, category, provider, name, sort, ids} = req.query;
+  console.log( from, page, category, provider, name, sort, ids);
+  
   // console.log(ids);
   if (ids) ids = ids.split("|");
   else ids = [];
