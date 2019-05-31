@@ -10,14 +10,27 @@ const router = express.Router();
 const Order = require("../../models/Order");
 const OrderDetail = require("../../models/OrderDetail");
 const Cart = require("../../models/Cart");
-
+const Payment = require("../../models/Payment");
 // Setup router
 router.get("/list", getListOrder);
+router.get("/list-payment", getListPayment);
 router.post("/add", postAddOrder);
 router.post("/cancel-order", postCancelOrder);
 router.post("/add-to-cart", postAddToCart);
 router.post("/success-order", postSuccessOrder);
 router.post("/change-product-count", postChangeOrderQuantity);
+
+function getListPayment(req, res) {
+  Payment.methods
+    .getList()
+    .then(list => {
+      res.json(list);
+    })
+    .catch(error => {
+      console.log(error);
+      return res.status(500);
+    });
+}
 
 /**
  * Body : orderId, userId, quantity
@@ -36,6 +49,8 @@ async function postChangeOrderQuantity(req, res) {
       return res.status(500).send({ ok: 0, message: "that bai" });
     });
 }
+
+
 
 /**
  * Body : orderId, comment, paymentId, quantity

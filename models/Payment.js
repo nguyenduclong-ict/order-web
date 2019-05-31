@@ -14,9 +14,13 @@ var schema = new Schema({
     isShow : Boolean,
     created: { type: Date, default: Date.now() }
 });
-
-var Payment = mongoose.model('Payment', schema);
+var Payment = {};
 Payment.methods = {};
+Payment.native = mongoose.model('Payment', schema);
+
+Payment.methods.getList = () =>{
+    return Payment.native.find({});
+}
 
 Payment.methods.addPayment = (Payment) => {
 

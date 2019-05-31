@@ -32,7 +32,7 @@ Cart.methods.addToCart = async (userId, products) => {
 // Xoa san pham trong gio hang
 Cart.methods.removeFromCart = async (userId, products) => {
   let cart = await Cart.findOne({ userId: userId }).lean();
-  console.log('models/Cart line 25 :', cart, products);
+  console.log("models/Cart line 25 :", cart, products);
   let n = cart.products.filter(e => !products.includes(e.toString()));
   console.log(n);
   return Cart.updateOne({ userId: userId }, { products: n });
