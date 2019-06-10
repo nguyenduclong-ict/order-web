@@ -55,7 +55,7 @@ Product.methods.getList = async (providerId, categoryId, name, isShow, from, pag
   // console.log(providerId, categoryId, name, isShow, from, page, sort, ids);
   query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (providerId) providerId = mongoose.Types.ObjectId(providerId);
-  query.providerId = providerId;
+  if(providerId) query.providerId = providerId;
 
   if (name) query.name = new RegExp(`${name}`);
   if (Array.isArray(ids) && ids.length > 0) {
