@@ -96,11 +96,22 @@ Discount.methods.getListByName = async (from, page, search) => {
     });
 };
 
+// Check discount
+const checkDiscount = async (id, productId) => {
+  console.log('â', id, productId);
+  let discount = await getDetail(id);
+  discount.products = discount.products.map(e => e._id);
+  console.log(discount, productId);
+  if (!discount.status) return { ok : false, message : "Mã giảm giá đã được sử dụng"};
+  let i = discount.products.indexOf(productId);
+  if (i < 0) return  { ok : false , message : "Mã giảm giá không áp dụng cho sản phẩm này"};
+  if (discount.products.endDate < Date.now()) return  { ok : false , message : "Mã giảm giá hết hạn"};
+  return {ok : true, discount};
+};
+
 async function editDiscount(data) {
   data.products = data.products.map(e => e._id);
-  data.providers = await Product.find({ _id: { $in: data.products } }, [
-    "providerId"
-  ]).exec();
+  data.providers = await Product.find({ _id: { $in: data.products } }, ["providerId"]).exec();
   data.providers = data.providers.map(e => e.providerId);
   console.log(data);
   return Discount.updateOne({ _id: data._id }, data);
@@ -117,9 +128,7 @@ function changeStatus(ids, status) {
 }
 
 async function addDiscount(startDate, endDate, status, value, products) {
-  let arr = await Product.find({ _id: { $in: products } }, [
-    "providerId"
-  ]).lean();
+  let arr = await Product.find({ _id: { $in: products } }, ["providerId"]).lean();
   let providers = [];
   arr.forEach(e => {
     providers.push(e.providerId);
@@ -140,6 +149,7 @@ Discount.methods.editDiscount = editDiscount;
 Discount.methods.addDiscount = addDiscount;
 Discount.methods.getDetail = getDetail;
 Discount.methods.changeStatus = changeStatus;
+Discount.methods.checkDiscount = checkDiscount;
 
 // export module
 module.exports = Discount;

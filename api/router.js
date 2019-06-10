@@ -30,5 +30,8 @@ router.use('/provider/order', require('./provider/order'));
 // Router customer
 router.use('/customer/order', auth.authCustomer, require('./customer/order'));
 router.use('/customer/cart', require('./customer/cart'));
+router.use('/customer/discount', auth.authCustomer , require('./customer/discount'));
+router.use('/customer/payment', auth.authCustomer , require('./customer/payment'));
+//
 
 module.exports = router;

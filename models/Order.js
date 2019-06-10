@@ -60,19 +60,8 @@ Order.methods = {};
  * @param {*} page
  * @param {*} sort
  */
-function getList(
-  productId,
-  providerId,
-  customerId,
-  status,
-  from = -1,
-  page = -1,
-  sort = 1
-) {
-  let query = validator.validateRemove(
-    { productId, customerId, providerId, status },
-    [undefined]
-  );
+function getList(productId, providerId, customerId, status, from, page, sort) {
+  let query = validator.validateRemove({ productId, customerId, providerId, status }, [undefined]);
 
   let result = Order.find(query);
   if (from) result.skip(Number(from));
@@ -103,11 +92,11 @@ function editComment(id, providerId, comment) {
 }
 
 async function changeOrderStatus(id, newStatus, comment) {
-  try {
-    return Order.updateOne(
-      { _id: id },
-      {
-        $push: {
+  return Order.updateOne(
+    { _id: id },
+    {
+      $push: {
+        preStatus: {
           $each: [
             {
               code: newStatus,
@@ -117,16 +106,15 @@ async function changeOrderStatus(id, newStatus, comment) {
           ],
           $sort: { time: -1 }
         }
-      }
-    );
-  } catch {
-    return Promise.reject();
-  }
+      },
+      status: newStatus
+    }
+  );
 }
 
 /**
  * Nha cung cap chap nhan don hang
- * @param {*} id 
+ * @param {*} id
  * @param {*} providerId
  * @param {*} comment
  */
@@ -164,15 +152,16 @@ async function refuseOrderForUser(id, customerId, comment) {
     customerId: customerId,
     status: orderStatus.pending
   });
+  console.log(order);
   if (!order) throw new Error("Order Khong hop le");
   return changeOrderStatus(id, orderStatus.fail, comment);
 }
 
 /**
- * 
- * @param {*} id 
- * @param {*} customerId 
- * @param {*} comment 
+ *
+ * @param {*} id
+ * @param {*} customerId
+ * @param {*} comment
  */
 async function deliveryOder(id, providerId, comment) {
   let order = await Order.findOne({
@@ -185,69 +174,49 @@ async function deliveryOder(id, providerId, comment) {
 }
 
 async function successOrder(id, customerId, providerId, comment) {
-  let query = validator.validateRemove(
-    { _id: id, customerId, providerId, status: orderStatus.delivery },
-    [undefined]
-  );
-  Order.findOneAndUpdate(query, {
-    comment: comment,
-    $inc: {
-      success: 1
-    }
-  }).then(async doc => {
-    console.log(doc);
-    if (doc.success == 2) {
-      let order = await Order.findOne({ _id: id }).populate("orderDetails");
-
-      let ids = order.orderDetails.map(e => e.productId);
-      let quantitys = order.orderDetails.map(e => e.quantity);
-      // Update status order and Product quantity
-      let p1 = changeOrderStatus(id, orderStatus.success, "");
-      return Promise.all([p1, Product.methods.reduceQuantity(ids, quantitys)]);
-    } else return Promise.resolve();
+  return new Promise((rs, rj) => {
+    let query = validator.validateRemove({ _id: id, customerId, providerId, status: orderStatus.delivery }, [
+      undefined
+    ]);
+    Order.findOneAndUpdate(query, {
+      comment: comment,
+      $inc: {
+        success: 1
+      }
+    }).then(async doc => {
+      console.log(doc);
+      if (doc && doc.success == 2) {
+        let order = await Order.findOne({ _id: id }).populate("orderDetails");
+        let ids = order.orderDetails.map(e => e.productId);
+        let quantitys = order.orderDetails.map(e => e.quantity);
+        // Update status order and Product quantity
+        let p1 = await changeOrderStatus(id, orderStatus.success, "");
+        await Promise.all([p1, Product.methods.reduceQuantity(ids, quantitys)]);
+        rs({ok : 1});
+      } else rj({  ok : 0 , message : "Đơn hàng không hợp lệ, chỉ có thể xác nhận đơn hàng đang ở trạng thái đang giao hàng"});
+    });
   });
 }
 
-async function addOrder(
-  products,
-  providerId,
-  customerId,
-  paymentId,
-  discountIds
-) {
-  let arr = await Product.find({
-    _id: { $in: products.map(e => e.productId) },
+async function addOrder(productId, quantity, providerId, customerId, paymentId, discountId) {
+  let product = await Product.find({
+    _id: productId,
     providerId
   });
 
-  if (arr.length < products.length)
-    throw new Error("San pham trong don hang khong hop le");
-  arr.forEach((e, i) => {
-    if (e.quantity < products[i].quantity)
-      throw new Error("San pham trong don hang khong hop le");
-  });
-
+  if (product.quantity < quantity) throw new Error("Không đủ số lượng đặt");
   // Them Order
-  let orderDetails = [];
-  products.forEach(e => {
-    orderDetails.push(
-      OrderDetail.methods.addOrderDetail(customerId, e, paymentId, discountIds)
-    );
-  });
-
-  return Promise.all(orderDetails).then(list => {
-    let odIds = list.map(e => e._id);
-    let totalPay = 0;
-    list.map(e => totalPay += e.total);
-    let order = {
-      orderDetails : odIds, 
-      preStatus : [],
-      totalPay : totalPay,
-      customerId,
-      providerId
-    }
-    order.save()
-  })
+  let od = await OrderDetail.methods.addOrderDetail(customerId, productId, discountId, quantity);
+  let data = {
+    orderDetails: [od._id],
+    preStatus: [],
+    totalPay: od.total,
+    customerId,
+    providerId,
+    paymentId
+  };
+  let order = new Order(data);
+  return order.save();
 }
 
 // Map Function

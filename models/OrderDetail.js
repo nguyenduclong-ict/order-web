@@ -1,5 +1,6 @@
 const mongoose = require("../helpers/MyMongoose").mongoose;
-
+const Discount = require("./Discount");
+const Product = require('./Product')
 var Schema = mongoose.Schema;
 var schema = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
@@ -43,25 +44,30 @@ OrderDetail.methods = {};
  * @param {Lưu ý cho người bán} commnet
  * @param {Mã giảm giá} discountId
  */
-async function addOrderDetail(customerId, product, discountId) {
+async function  addOrderDetail(customerId, productId, discountId, quantity) {
   // Check discount, payment
-
   let pdis = 0; // Phan tram giam gia dinh nghia o day
-  let prod = Product.findOne({ _id: product.productId });
+  try {
+    let f = await Discount.methods.checkDiscount(discountId, productId);
+    if (f.ok) pdis = f.discount.value * 0.01;
+  } catch {
 
+  }
+  let prod = await Product.findOne({ _id: productId });
+  console.log(prod);
   let data = {
     customerId,
-    productId: product.productId,
-    discountId: discountId,
-    quantity: product.quantity,
+    productId: productId,
+    quantity: quantity,
     product: {
       name: prod.name,
       description: prod.description,
       price: prod.price
     },
-    total: product.quantity * prod.price // tru di phan giam gia o day
+    total: quantity * prod.price * (1 - pdis) // tru di phan giam gia o day
   };
-
+  if(discountId) data.discountid = discountId;
+  console.log(data);
   let doc = new OrderDetail(data);
   return doc.save();
 }

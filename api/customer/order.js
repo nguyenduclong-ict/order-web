@@ -50,8 +50,6 @@ async function postChangeOrderQuantity(req, res) {
     });
 }
 
-
-
 /**
  * Body : orderId, comment, paymentId, quantity
  */
@@ -64,11 +62,12 @@ async function postChangeOrderQuantity(req, res) {
  * 5 Xoá đơn hàng khỏi giỏ hàng
  */
 async function postAddOrder(req, res) {
+  let { productId, paymentId, discountId, quantity, providerId } = req.body;
   let userId = req.user._id;
-  let { products, paymentId, discountIds } = req.body;
-
+  if (!req.user.info.name || !req.user.info.address || !req.user.info.phone)
+    return res.json({ ok: 0, message: "Vui lòng nhập đầy đủ thông tin cá nhân để đặt hàng" });
   Order.methods
-    .addOrder(products, providerId, userId, paymentId, discountIds)
+    .addOrder(productId, quantity, providerId, userId, paymentId, discountId)
     .then(() => {
       return res.json({ ok: 1, message: "thanh cong" });
     })
@@ -83,9 +82,11 @@ async function postAddOrder(req, res) {
  */
 async function getListOrder(req, res) {
   let userId = req.user._id;
+  console.log(userId, req.user);
   Order.methods
     .getList(undefined, undefined, userId, undefined)
     .then(list => {
+      console.log("get list order", list);
       return res.json(list);
     })
     .catch(err => {
@@ -110,7 +111,7 @@ async function postCancelOrder(req, res) {
     })
     .catch(err => {
       console.log(err);
-      return res.status(500).send({ ok: 0, message: "that bai" });
+      return res.send({ ok: 0, message: "that bai" });
     });
 }
 
@@ -124,12 +125,13 @@ async function postSuccessOrder(req, res) {
   let userId = req.user._id;
   Order.methods
     .successOrder(orderId, userId, undefined, comment)
-    .then(() => {
-      return res.json({ ok: 1, message: "Thanh cong" });
+    .then((rs) => {
+      console.log(rs);
+      return res.json(rs);
     })
     .catch(err => {
       console.log(err);
-      return res.status(500).send({ ok: 0, message: "that bai" });
+      return res.send(err);
     });
 }
 
