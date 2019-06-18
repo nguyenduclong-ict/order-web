@@ -40,7 +40,9 @@ async function postAddToCart(req, res) {
   let userId = req.user._id;
   let products = req.body.products;
   console.log('router customer/cart line 41 :', req.body);
-  Cart.methods
+
+  Cart.
+  methods
     .addToCart(userId, products)
     .then(result => {
       res.status(200).json({ message: "Add success", result : result });

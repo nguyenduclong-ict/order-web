@@ -48,18 +48,13 @@ async function remove(_id) {
 }
 
 // Lấy danh sách theo parenId
-async function getList(parentId, from = 0, page = 1000, isShow = "all") {
-  from = Number(from);
-  page = Number(page);
-  let query = validate.validateRemove({ parentId, isShow }, [undefined, "all"]);
-  if(parentId === 'null') query.parentId = null;
-  if (parentId && Array.isArray(parentId)) query.parentId = { $in: parentId };
-  console.log(query);
+async function getList(parentId, from = 0, page = 1000, isShow) {
+  let query = {};
+  if (isShow) query.isShow = isShow;
+  if (parentId) query.parentId = parentId;
   let result = Category.find(query);
-  result.populate("parentId");
-  result.skip(from);
-  result.limit(page);
-
+  result.skip(Number(from));
+  result.limit(Number(page));
   return result.exec();
 }
 

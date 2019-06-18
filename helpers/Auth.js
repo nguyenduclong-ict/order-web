@@ -105,8 +105,8 @@ async function authFile(req, res, next) {
   req.data = {};
   if (req.method === "GET" && req._parsedOriginalUrl.pathname === "/api/file") {
     req.data.file = file;
-    if (!file) return res.status(404).send("File not found");
-    if (file.isPublic === true) return res.sendFile(path.join(rootPath, file.path, filename));
+    if (!file) return res.sendFile(path.join(rootPath, 'upload/no-image.jpg'));
+    if (file.isPublic === true) return next();
     let tokenId = req.query.code;
     // Kiem tra dang nhap
     checkTokenById(tokenId)
@@ -127,7 +127,7 @@ async function authFile(req, res, next) {
       .then(checkToken)
       .then(checkUser)
       .then(user => {
-          console.log(user);
+        console.log(user);
         req.user = user;
         return next();
       })

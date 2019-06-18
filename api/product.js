@@ -10,17 +10,17 @@ router.get("/list", getListProduct);
 router.get("/detail/:id", getDetail);
 
 async function getListProduct(req, res) {
-  let { from, page, category, provider, name, sort, ids} = req.query;
-  console.log( from, page, category, provider, name, sort, ids);
-  
-  // console.log(ids);
-  if (ids) ids = ids.split("|");
-  else ids = [];
-  // console.log(ids);
+  let { from, page, category, provider, name, sort, ids } = req.query;
+  if (name === "") name = undefined;
+  if (!category) category = category;
+  else if (!Array.isArray(category)) category = [category];
+
+  sort = sort ? JSON.parse(sort) : { _id: 1 };
+  console.log(sort);
   Product.methods
     .getList(provider, category, name, true, from, page, sort, ids)
     .then(list => {
-      console.log(list);
+      console.log("line 19 proudct api ", list);
       return res.json(list);
     })
     .catch(error => {

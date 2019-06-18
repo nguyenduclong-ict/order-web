@@ -4,8 +4,8 @@ mongoose.set('useCreateIndex', true);
 var db_url = process.env.DATABASE_URL;
 // Connect mongoose
 mongoose.connect(db_url, {useNewUrlParser: true}, (err, succ) => {
-    if(!err) console.log('database connect success');
-    else console.log('Connect database failure','\n', err);
+    if (!err) console.log('database connect success');
+    else console.log('Connect database failure', '\n', err);
 });
 
 var Types = {};
@@ -14,7 +14,7 @@ Types.email = {
     type: String,
     trim: true,
     lowercase: true,
-    unique: [true , "Email must unique"],
+    unique: [true, "Email must unique"],
     validate: {
         validator: (v) => {
             let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/igm;
@@ -30,13 +30,13 @@ Types.phone = {
 }
 
 Types.image = {
-    filename :String, 
-    path :  String
+    filename: String,
+    path: String
 }
 
 Types.password = {
-    type : String,
-    required : [true, 'Password not empty!']
+    type: String,
+    required: [true, 'Password not empty!']
 }
 
 module.exports = {

@@ -9,7 +9,7 @@ var File = require("../models/File");
 const NError = require("../helpers/Error");
 const rootPath = process.env.ROOT_PATH;
 const path = require("path");
-
+const jimp = require("jimp");
 // Router
 router.get("/", getFile);
 router.delete("/delete", deleteFile);
@@ -36,10 +36,26 @@ async function deleteFile(req, res) {
 async function getFile(req, res) {
   let user = req.user;
   let file = req.data.file;
-  console.log(file);
+  console.log("file ", file);
   try {
-    if (!user._id.equals(file.owner)) throw new NError("Khong co quyen truy cap file", 403);
-    return res.sendFile(path.join(rootPath, file.path, filename));
+    if (!file.isPublic && !user._id.equals(file.owner)) throw new NError("Khong co quyen truy cap file", 403);
+    let filePath = path.join(rootPath, file.path, file.filename);
+    jimp.read(filePath).then(image => {
+      console.log("getImage", image);
+      let thumbpath = path.join(rootPath, "upload/tmp/" + file.filename);
+      if (req.query.size) {
+        let size = req.query.size.split("x");
+        let w = Number(size[0]);
+        let h = Number(size[1]);
+        image.resize(jimp.AUTO, h).crop((image.getWidth() - w) / 2, (image.getHeight() - h) / 2, w, h);
+      }
+      image.write(thumbpath, () => {
+        console.log(thumbpath);
+        return res.sendFile(thumbpath);
+      });
+    }).catch(err => {
+      return res.sendFile(path.join(rootPath, 'upload/no-image.jpg'));
+    })
   } catch (error) {
     return res.status(error.code).send(error.message);
   }

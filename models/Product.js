@@ -35,7 +35,7 @@ var schema = new Schema({
     type: Number,
     default: 0
   },
-  ordered: {
+  sold: {
     // Số lượng đã bán
     type: Number,
     default: 0
@@ -51,11 +51,11 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (providerId, categoryId, name, isShow, from, page, sort, ids) => {
+Product.methods.getList = async (providerId, categoryId = [], name, isShow, from, page, sort, ids) => {
   // console.log(providerId, categoryId, name, isShow, from, page, sort, ids);
   query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (providerId) providerId = mongoose.Types.ObjectId(providerId);
-  if(providerId) query.providerId = providerId;
+  if (providerId) query.providerId = providerId;
 
   if (name) query.name = new RegExp(`${name}`);
   if (Array.isArray(ids) && ids.length > 0) {
@@ -63,43 +63,20 @@ Product.methods.getList = async (providerId, categoryId, name, isShow, from, pag
     query._id = { $in: ids };
   }
   // Dieu kien tim kiếm theo category
-  if (categoryId) {
-    arr = categoryId.split("|").filter(e => e !== "");
-    let arr2 = await Category.find({ parentId: { $in: arr } });
-    arr = arr.map(e => mongoose.Types.ObjectId(e.toString()));
-    arr2 = arr2.map(e => mongoose.Types.ObjectId(e._id.toString()));
-
-    console.log(arr, arr2);
-    arr2 = [...arr, ...arr2];
+  console.log(categoryId);
+  if (categoryId.length > 0) {
+    let arr = await Category.find({ parentId: { $in: categoryId } });
+    arr = arr.map(e => mongoose.Types.ObjectId(e._id.toString()));
+    categoryId.map(e => mongoose.Types.ObjectId(e.toString()));
+    arr = [...arr, ...categoryId];
     query.categoryId = {
-      $in: arr2
+      $in: arr
     };
   }
-
-  // Sort
-  if (sort) {
-    let arr = sort.split("|").filter(e => e !== "");
-    sort = {};
-    for (let i = 0; i < arr.length; i = i + 2) {
-      sort[arr[i]] = Number(arr[i + 1]);
-    }
-  } else {
-    sort = { _id: 1 };
-  }
-
-  // // console.debug("Query", query , 'Sort ', sort);
-  // let result = Product.find(query);
-  // if (from) result.skip(Number(from));
-  // if (page) result.limit(Number(page));
-  // result.populate("categoryId", "name");
-  // result.populate("providerId", "info _id ");
-  // result.sort(sort);
-  // return result.exec();
-
   from = Number(from) || 0;
   page = Number(page) || 9999;
 
-  console.log(query);
+  console.log("query ", query);
   let list = await Product.aggregate([
     { $match: query },
     {
@@ -169,7 +146,7 @@ function updateProduct(id, providerId, newProduct) {
 }
 
 function addProduct(data) {
-  if (data.ordered) delete data.ordered;
+  if (data.sold) delete data.sold;
   let product = new Product(data);
   Log.methods.addLog("Add Product", product, "create");
   return product.save();
