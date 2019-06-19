@@ -55,6 +55,7 @@ async function getList(parentId, from = 0, page = 1000, isShow) {
   let result = Category.find(query);
   result.skip(Number(from));
   result.limit(Number(page));
+  result.populate('parentId');  
   return result.exec();
 }
 

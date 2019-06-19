@@ -15,9 +15,8 @@ function setIsShow(req, res) {
     let providerId = req.user._id;
     console.log(ids, isShow);
     Product.updateMany({ _id: { $in: ids }, providerId }, { isShow }).then(result => {
-      let ok = 0;
-      if (result.nModified === ids.length) ok = 1;
-      return res.json({ result: result, ok: ok, message: ok === 1 ? "Thanh cong" : "That bai" });
+      console.log(result);
+      return res.json({ result: result, ok: 1});
     });
   } catch (error) {}
 }
@@ -62,14 +61,14 @@ function postAddProduct(req, res) {
     .addProduct(data)
     .then(doc => {
       return res.status(200).json({
-        ok : 1,
+        ok: 1,
         message: "Add Product success",
         data: doc
       });
     })
     .catch(err => {
       return res.json({
-        ok :0,
+        ok: 0,
         error: true,
         message: err.message
       });

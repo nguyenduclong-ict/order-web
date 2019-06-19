@@ -42,7 +42,7 @@ Cart.methods.removeFromCart = async (userId, products) => {
  * Lay thong tin gio hang
  */
 Cart.methods.getCart = async userId => {
-    return Cart.findOne({userId: userId});
+    return Cart.findOne({userId: userId}).populate('products');
 };
 
 /**

@@ -31,7 +31,6 @@ async function getAll(req, res, next) {
 
 
 async function getList(req, res) {
-    console.log('aaa');
     let parentId = req.params.parentId == 'root' ? undefined : req.params.parentId;
     let from = Number(req.params.from);
     let page = Number(req.params.page);

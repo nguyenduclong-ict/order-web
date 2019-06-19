@@ -4,6 +4,7 @@ var router = express.Router();
 var Payment = require('../../models/Payment');
 
 router.get('/list/:from-:page', getList);
+router.get('/list', getList);
 router.get('/detail/:id', getDetail);
 router.post('/edit/:id', postEdit);
 router.post('/add', postAdd);
@@ -21,15 +22,9 @@ function postChangeDisplay(req, res) {
 }
 
 function getList(req, res) {
-    let from = Number(req.params.from);
-    let page = Number(req.params.page);
-    Payment.find()
-        .skip(from)
-        .limit(page)
-        .lean()
-        .then(docs => {
-            return res.json(docs);
-        })
+    Payment.methods.getList().then(result => {
+        return res.json(result);
+    })
 };
 
 

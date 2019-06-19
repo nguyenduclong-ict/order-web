@@ -2,26 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3236b418-f873-4c3e-8bc3-9f89ed4adf5a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/ndl.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/category.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/category.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/customer/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/customer/cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/Auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/Auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/MyMongoose.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/MyMongoose.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/Token.js" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/Token.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/admin/category.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/admin/category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/admin/payment.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/admin/payment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/provider/order.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/provider/order.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/provider/product.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/provider/product.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Category.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Comment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Discount.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Discount.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/File.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/File.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Log.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Log.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Order.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/OrderDetail.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/OrderDetail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Payment.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Payment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/Product.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Product.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/Token.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/Token.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/User.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -41,8 +27,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helpers/Auth.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+            <state relative-caret-position="272">
+              <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -69,7 +55,7 @@
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="374">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
+              <caret line="23" selection-start-line="23" selection-end-line="23" />
             </state>
           </provider>
         </entry>
@@ -95,8 +81,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/category.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="18" lean-forward="true" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+            <state relative-caret-position="136">
+              <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -104,7 +90,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/Category.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-421">
+            <state relative-caret-position="17">
               <caret line="20" selection-start-line="20" selection-end-line="20" />
             </state>
           </provider>
@@ -135,7 +121,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="98" />
     <option name="y" value="115" />
     <option name="width" value="1182" />
@@ -146,6 +132,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -173,7 +160,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -216,16 +202,17 @@
       <workItem from="1560498763574" duration="171000" />
       <workItem from="1560498953409" duration="100000" />
       <workItem from="1560676261638" duration="2492000" />
+      <workItem from="1560884862578" duration="4000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6175000" />
+    <option name="totallyTimeSpent" value="6179000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="98" y="115" width="1182" height="643" extended-state="0" />
+    <frame x="-1" y="23" width="1602" height="878" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19327006" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19277108" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -281,10 +268,15 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/threadDump1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-306" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/helpers/Auth.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+        <state relative-caret-position="272">
+          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -305,7 +297,7 @@
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
         </state>
       </provider>
     </entry>
@@ -323,6 +315,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/api/category.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api/customer/cart.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -330,21 +329,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/category.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="18" lean-forward="true" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/threadDump1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-306" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/Category.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-421">
+        <state relative-caret-position="17">
           <caret line="20" selection-start-line="20" selection-end-line="20" />
         </state>
       </provider>

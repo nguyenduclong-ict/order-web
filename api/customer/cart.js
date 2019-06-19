@@ -1,10 +1,9 @@
 const router = require("express").Router();
 const Cart = require("../../models/Cart");
-const auth = require("../../helpers/Auth");
 
-router.get("/", auth.authCustomer, getCart);
-router.post("/remove-product", auth.authCustomer, deleteProductFromCart);
-router.post("/add-product", auth.authCustomer, postAddToCart);
+router.get("/", getCart); // Lay thong tin gio hang
+router.post("/remove-product", deleteProductFromCart); // xoa san pham khoi gio hang
+router.post("/add-product", postAddToCart); // The san pham vao gio hang
 
 // Lay thong tin cua gio hang của user
 async function getCart(req, res) {
@@ -13,7 +12,7 @@ async function getCart(req, res) {
     let userId = req.user._id;
     Cart.methods.getCart(userId).then(cart => {
       console.log('Router coustmer/cart :',cart.products);
-      return res.json(JSON.stringify(cart));
+      return res.json(cart);
     });
   } catch (err) {
     console.log(err);
@@ -39,8 +38,8 @@ async function deleteProductFromCart(req, res) {
 async function postAddToCart(req, res) {
   let userId = req.user._id;
   let products = req.body.products;
-  console.log('router customer/cart line 41 :', req.body);
-
+  console.log('router customer/cart line 41 :', products);
+  
   Cart.
   methods
     .addToCart(userId, products)

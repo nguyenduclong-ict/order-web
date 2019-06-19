@@ -105,7 +105,7 @@ Product.methods.getList = async (providerId, categoryId = [], name, isShow, from
     },
     { $skip: from },
     { $limit: page },
-    { $sort: sort }
+    // { $sort: sort }
   ]);
 
   list.map(e => {
@@ -129,9 +129,12 @@ async function reduceQuantity(ids, values) {
 async function getDetail(id, provider = undefined, isShow = true) {
   let query = validate.validateRemove({ _id: id, isShow, providerId: provider }, [undefined]);
   let product = await Product.findOne(query)
-    .populate("providerId", "name")
-    .populate("categoryId", "name");
-  let images = await File.methods.getOne({ subOwner: [product._id] }, "filename");
+    .populate("providerId")
+    .populate("categoryId")
+    .lean();
+  let images = await File.find({ subOwner: { $all: [product._id] } });
+  images = images.map(img => img.filename);
+  console.log(images);
   product.images = images || [];
   return product;
 }
