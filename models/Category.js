@@ -38,7 +38,8 @@ async function edit(id, name, parentId, isShow) {
     if (!data[field]) delete data[field];
   }
   return Category.updateOne({
-    _id: id
+    _id: id,
+    data
   });
 }
 
