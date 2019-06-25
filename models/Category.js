@@ -34,7 +34,7 @@ function add(name, parentId) {
 async function edit(id, name, parentId, isShow) {
   console.log(id, name, parentId);
   let data = { name: name, parentId: parentId, isShow };
-  for (let field of data) {
+  for (let field in data) {
     if (!data[field]) delete data[field];
   }
   return Category.updateOne({
