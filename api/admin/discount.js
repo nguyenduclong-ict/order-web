@@ -8,15 +8,13 @@ const validator = require("../../helpers/Validator");
 // Router
 router.get("/list/:from-:page-:product-:provider-:search", getList);
 router.get("/detail/:id", getDetail);
-router.get("/products/:name", getListProducts);
+router.get("/products", getListProducts);
 router.post("/add", postAdd);
 router.post("/edit/:id", postEdit);
 router.post("/change-status", postChangeStatus);
 
 function getListProducts(req, res) {
-  let name = req.params.name;
-  name = name === "all" ? undefined : name.split("%20").join(" ");
-
+  let name = req.query.name;  
   Product.methods
     .getListByName(name)
     .then(result => {
