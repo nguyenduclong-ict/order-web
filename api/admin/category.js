@@ -84,7 +84,7 @@ function postEditCategory(req, res, next) {
   let { name, parentId, isShow } = req.body.name;
 
   Category.methods
-    .edit(categoryId, name, parentId, isShow)
+    .edit({categoryId, name, parentId, isShow})
     .then(result => {
       console.log(result);
       return res.json({
