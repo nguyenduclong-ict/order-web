@@ -33,12 +33,13 @@ function add(name, parentId) {
 // Chỉnh sửa
 async function edit(id, name, parentId, isShow) {
   console.log(id, name, parentId);
-  return Category.updateOne(
-    {
-      _id: id
-    },
-    { name: name, parentId: parentId, isShow }
-  );
+  let data = { name: name, parentId: parentId, isShow };
+  for (let field of data) {
+    if (!data[field]) delete data[field];
+  }
+  return Category.updateOne({
+    _id: id
+  });
 }
 
 async function remove(_id) {
@@ -55,7 +56,7 @@ async function getList(parentId, from = 0, page = 1000, isShow) {
   let result = Category.find(query);
   result.skip(Number(from));
   result.limit(Number(page));
-  result.populate('parentId');  
+  result.populate("parentId");
   return result.exec();
 }
 

@@ -13,6 +13,7 @@ async function getCart(req, res) {
     Cart.methods.getCart(userId).then(cart => {
       // console.log('Router coustmer/cart :',cart.products);
       console.log(cart);
+      if(!cart) cart = {};
       return res.json(cart);
     });
   } catch (err) {
