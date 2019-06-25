@@ -11,7 +11,8 @@ async function getCart(req, res) {
     // usefId
     let userId = req.user._id;
     Cart.methods.getCart(userId).then(cart => {
-      console.log('Router coustmer/cart :',cart.products);
+      // console.log('Router coustmer/cart :',cart.products);
+      console.log(cart);
       return res.json(cart);
     });
   } catch (err) {

@@ -31,13 +31,13 @@ function add(name, parentId) {
 }
 
 // Chỉnh sửa
-async function edit(id, name, parentId) {
+async function edit(id, name, parentId, isShow) {
   console.log(id, name, parentId);
   return Category.updateOne(
     {
       _id: id
     },
-    { name: name, parentId: parentId }
+    { name: name, parentId: parentId, isShow }
   );
 }
 
