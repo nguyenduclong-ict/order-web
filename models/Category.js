@@ -33,10 +33,10 @@ function add(name, parentId) {
 // Chỉnh sửa
 async function edit(id, name, parentId, isShow) {
   console.log(id, name, parentId);
-  let data = { name: name, parentId: parentId, isShow };
-  for (let field in data) {
-    if (!data[field]) delete data[field];
-  }
+  let data = {};
+  if (name) data.name = name;
+  if (parentId) data.parentId = parentId;
+  if (isShow) data.isShow = isShow;
   return Category.updateOne({
     _id: id,
     data
