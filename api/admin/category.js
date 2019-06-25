@@ -81,8 +81,9 @@ async function postAddCategory(req, res, next) {
 // Edit Category
 function postEditCategory(req, res, next) {
   let categoryId = req.params.id;
-  let { name, parentId, isShow } = req.body.name;
+  let { name, parentId, isShow } = req.body;
 
+  console.log(req.body);
   Category.methods
     .edit({categoryId, name, parentId, isShow})
     .then(result => {

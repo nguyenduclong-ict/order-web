@@ -36,6 +36,7 @@ async function edit({ categoryId, name, parentId, isShow }) {
   if (name) data.name = name;
   if (parentId) data.parentId = parentId;
   if (isShow) data.isShow = isShow;
+  console.log(categoryId, data);
   return Category.updateOne(
     {
       _id: categoryId
