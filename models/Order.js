@@ -177,13 +177,13 @@ async function deliveryOder(id, providerId, comment) {
 }
 
 async function successOrder(id, customerId, providerId, comment) {
-  return new Promise((rs, rj) => {
+  return new Promise(async (rs, rj) => {
     let query = validator.validateRemove(
       { _id: id, customerId, providerId, status: orderStatus.delivery },
       [undefined]
     );
     let order = await Order.findOne(query);
-      if (!order) throw new Error("Order Khong hop le");
+    if (!order) throw new Error("Order Khong hop le");
     changeOrderStatus(id, orderStatus.success, comment).then(async doc => {
       console.log(doc);
       if (doc) {
