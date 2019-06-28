@@ -184,7 +184,7 @@ async function successOrder(id, customerId, providerId, comment) {
       status: orderStatus.delivery
     });
     if (!order)
-      rj({
+      return rj({
         ok: 0,
         message:
           "Đơn hàng không hợp lệ, chỉ có thể xác nhận đơn hàng đang ở trạng thái đang giao hàng"
