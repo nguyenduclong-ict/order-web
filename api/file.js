@@ -46,6 +46,7 @@ async function getFile(req, res) {
       let w = Number(size[0]);
       let h = Number(size[1]);
       console.log(w,h);
+      return res.send('buffer');
       jimp
         .read(filePath)
         .then(image => {
@@ -59,7 +60,7 @@ async function getFile(req, res) {
               .quality(50)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
-                res.send('buffer');
+                return res.send('buffer');
               });
           }
         })
