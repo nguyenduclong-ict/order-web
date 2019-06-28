@@ -191,7 +191,7 @@ async function successOrder(id, customerId, providerId, comment) {
         let ids = order.orderDetails.map(e => e.productId);
         let quantitys = order.orderDetails.map(e => e.quantity);
         // Update status order and Product quantity
-        await Promise.all([p1, Product.methods.reduceQuantity(ids, quantitys)]);
+        await Product.methods.reduceQuantity(ids, quantitys);
         rs({ ok: 1 });
       } else
         rj({
