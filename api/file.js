@@ -49,14 +49,11 @@ async function getFile(req, res) {
         .read(filePath)
         .then(image => {
           if (req.query.size) {
+            let left = (image.getWidth() - w) / 2;
+            let top = (image.getHeight() - h) / 2;
             image
               .resize(jimp.AUTO, h)
-              .crop(
-                (image.getWidth() - w) / 2,
-                (image.getHeight() - h) / 2,
-                w,
-                h
-              )
+              .crop(left, top, w, h)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
                 res.send(buffer);
@@ -64,8 +61,8 @@ async function getFile(req, res) {
           }
         })
         .catch(err => {
-          console.log(err);
-          return res.sendFile(path.join(rootPath, "upload/no-image.jpg"));
+          console.log("get File Error " + err);
+          return res.sendFile(path.join(rootPath, "public/img/no-image.png"));
         });
     } else {
       return res.sendFile(filePath);

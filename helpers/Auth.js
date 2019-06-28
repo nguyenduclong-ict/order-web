@@ -105,7 +105,7 @@ async function authFile(req, res, next) {
   req.data = {};
   if (req.method === "GET" && req._parsedOriginalUrl.pathname === "/api/file") {
     req.data.file = file;
-    if (!file) return res.sendFile(path.join(rootPath, 'upload/no-image.jpg'));
+    if (!file) return res.sendFile(path.join(rootPath, 'public/img/no-image.png'));
     if (file.isPublic === true) return next();
     let tokenId = req.query.code;
     // Kiem tra dang nhap
