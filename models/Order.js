@@ -118,7 +118,7 @@ async function changeOrderStatus(id, newStatus, comment) {
  * @param {*} providerId
  * @param {*} comment
  */
-async function acceptOrder(id, providerId, comment) {
+async function acceptOrder(id, productId, comment) {
     let order = await Order.findOne({
         _id: id,
         productId: productId,
