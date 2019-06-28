@@ -14,17 +14,19 @@ function setIsShow(req, res) {
     let { ids, isShow } = req.body;
     let providerId = req.user._id;
     console.log(ids, isShow);
-    Product.updateMany({ _id: { $in: ids }, providerId }, { isShow }).then(result => {
-      console.log(result);
-      return res.json({ result: result, ok: 1});
-    });
+    Product.updateMany({ _id: { $in: ids }, providerId }, { isShow }).then(
+      result => {
+        console.log(result);
+        return res.json({ result: result, ok: 1 });
+      }
+    );
   } catch (error) {}
 }
 
 function getList(req, res) {
   let { from, page, category, name } = req.query;
   let provider = req.user._id;
-
+  if (category && Array.isArray(category)) category = [category];
   Product.methods
     .getList(provider, category, name, undefined, from, page)
     .then(list => {
@@ -89,7 +91,10 @@ function postEdit(req, res) {
           message: "Update Product success",
           ok: 1
         });
-      else throw new Error("Update Fail, ban khong co quyen chinh sua san pham nay");
+      else
+        throw new Error(
+          "Update Fail, ban khong co quyen chinh sua san pham nay"
+        );
     })
     .catch(err => {
       return res.json({

@@ -10,7 +10,7 @@ router.post("/nhan-don/:id", aceptOrder);
 router.post("/giao-hang/:id", postGiaoHang);
 
 async function getListOrder(req, res) {
-  let { from, page, customerId } = req.query;
+  let { from, page, customerId, productId } = req.query;
   let providerId = req.user._id;
   Order.methods
     .getList(productId, providerId, customerId, from, page)
