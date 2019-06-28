@@ -45,14 +45,14 @@ async function getFile(req, res) {
       let size = req.query.size.split("x");
       let w = Number(size[0]);
       let h = Number(size[1]);
-      console.log(w, h);
       jimp
-        .read(filePath)
-        .then(image => {
-          if (req.query.size) {
-            let left = (image.getWidth() - w) / 2;
-            let top = (image.getHeight() - h) / 2;
-            // return res.send("buffer");
+      .read(filePath)
+      .then(image => {
+        if (req.query.size) {
+          let left = (image.getWidth() - w) / 2;
+          let top = (image.getHeight() - h) / 2;
+          // return res.send("buffer");
+          console.log(left,top,w, h);
             image
               .resize(jimp.AUTO, h)
               .crop(left, top, w, h)
