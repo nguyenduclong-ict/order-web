@@ -15,10 +15,9 @@ const Payment = require("../../models/Payment");
 router.get("/list", getListOrder);
 router.get("/list-payment", getListPayment);
 router.post("/add", postAddOrder);
-router.post("/cancel-order", postCancelOrder);
-router.post("/add-to-cart", postAddToCart);
-router.post("/success-order", postSuccessOrder);
-router.post("/change-product-count", postChangeOrderQuantity);
+router.put("/cancel", putCancelOrder);
+router.put("/success", putSuccessOrder);
+router.put("/change-product-count", putChangeOrderQuantity);
 
 function getListPayment(req, res) {
   Payment.methods
@@ -35,7 +34,7 @@ function getListPayment(req, res) {
 /**
  * Body : orderId, userId, quantity
  */
-async function postChangeOrderQuantity(req, res) {
+async function putChangeOrderQuantity(req, res) {
   let orderDetailId = req.body.orderDetailId;
   let userId = req.user._id;
   let quantity = req.body.quantity;
@@ -64,16 +63,20 @@ async function postChangeOrderQuantity(req, res) {
 async function postAddOrder(req, res) {
   let { productId, paymentId, discountId, quantity, providerId } = req.body;
   let userId = req.user._id;
+  if (discountId === "") discountId = undefined;
   if (!req.user.info.name || !req.user.info.address || !req.user.info.phone)
-    return res.json({ ok: 0, message: "Vui lòng nhập đầy đủ thông tin cá nhân để đặt hàng" });
+    return res.json({
+      ok: 0,
+      message: "Vui lòng nhập đầy đủ thông tin cá nhân để đặt hàng"
+    });
   Order.methods
     .addOrder(productId, quantity, providerId, userId, paymentId, discountId)
     .then(() => {
-      return res.json({ ok: 1, message: "thanh cong" });
+      return res.json({ ok: 1, message: "Add order success" });
     })
     .catch(err => {
       console.log(err);
-      return res.status(500).send({ ok: 0, message: "that bai" });
+      return res.status(500).send({ ok: 0, message: "Add Order Success" });
     });
 }
 
@@ -101,7 +104,7 @@ async function getListOrder(req, res) {
  * @param {*} req
  * @param {*} res
  */
-async function postCancelOrder(req, res) {
+async function putCancelOrder(req, res) {
   let userId = req.user._id;
   let { orderId, comment } = req.body;
   Order.methods
@@ -119,13 +122,13 @@ async function postCancelOrder(req, res) {
 /**
  * Body : orderId, comment
  */
-async function postSuccessOrder(req, res) {
+async function putSuccessOrder(req, res) {
   let orderId = req.body.orderId;
   let comment = req.body.comment;
   let userId = req.user._id;
   Order.methods
     .successOrder(orderId, userId, undefined, comment)
-    .then((rs) => {
+    .then(rs => {
       console.log(rs);
       return res.json(rs);
     })
@@ -135,18 +138,5 @@ async function postSuccessOrder(req, res) {
     });
 }
 
-async function postAddToCart(req, res) {
-  let userId = req.user._id;
-  let { productId, quantity } = req.body;
-  Cart.methods
-    .addToCart(userId, undefined, productId, quantity)
-    .then(() => {
-      return res.json({ ok: 1, message: "thanh cong" });
-    })
-    .catch(err => {
-      console.log(err);
-      return res.status(500).send({ ok: 0, message: "that bai" });
-    });
-}
 
 module.exports = router;

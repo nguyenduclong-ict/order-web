@@ -314,7 +314,7 @@ get /api/customer/cart
 ```
 post /api/customer/cart/add-product
 body : {
-  products : [] // Mang cac product id 
+  products : [] // Mang cac product id
 }
 ```
 
@@ -323,7 +323,7 @@ body : {
 ```
 delete /api/customer/cart
 body : {
-  products : [] // Mang cac product id 
+  products : [] // Mang cac product id
 }
 ```
 
@@ -333,6 +333,7 @@ body : {
 
 ```
 get   "/customer/order/list"
+get   "/customer/order/list-payment"
 ---
 post  "/customer/order/add"
 body : {
@@ -344,16 +345,13 @@ body : {
     discountIds
 }
 ---
-post  "/customer/order/cancel-order"
+put  "/customer/order/cancel"
 body : { orderId, comment }
 ---
-post  "/customer/order/add-to-cart"
-
----
-post  "/customer/order/success-order"
+put  "/customer/order/success"
 body : { orderId, comment }
 ---
-post  "/customer/order/change-product-count"
+put  "/customer/order/change-product-count"
 body : {
     orderDetailId, // Id của order detail
     quantity

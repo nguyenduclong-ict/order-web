@@ -6,7 +6,7 @@ var Product = require("../../models/Product");
 const validator = require("../../helpers/Validator");
 
 // Router
-router.get("/list/:from-:page-:product-:provider-:search", getList);
+router.get("/list", getList);
 router.get("/detail/:id", getDetail);
 router.get("/products", getListProducts);
 router.post("/add", postAdd);
@@ -14,7 +14,7 @@ router.post("/edit/:id", postEdit);
 router.post("/change-status", postChangeStatus);
 
 function getListProducts(req, res) {
-  let name = req.query.name;  
+  let name = req.query.name;
   Product.methods
     .getListByName(name)
     .then(result => {
@@ -41,12 +41,9 @@ function postChangeStatus(req, res) {
 
 // Danh sach loc - cac tham so productid , categoryid de 'all' de lay ra tat ca
 function getList(req, res) {
-  let { from, page, search } = req.params;
+  let { from, page, search, product, provider } = req.query;
 
-  product = req.params.product !== "all" ? req.params.product : undefined;
-  provider = req.params.provider !== "all" ? req.params.provider : undefined;
-
-  if (search !== "all") {
+  if (search) {
     search = search.replace("%20", " ");
     Discount.methods
       .getListByName(from, page, search)
@@ -55,8 +52,8 @@ function getList(req, res) {
       })
       .catch(err => {
         console.log(err);
-        return res.json([])
-      })
+        return res.json([]);
+      });
   } else {
     Discount.methods
       .getList(from, page, product, provider)
