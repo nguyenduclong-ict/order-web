@@ -38,24 +38,38 @@ async function getFile(req, res) {
   let file = req.data.file;
   console.log("file ", file);
   try {
-    if (!file.isPublic && !user._id.equals(file.owner)) throw new NError("Khong co quyen truy cap file", 403);
+    if (!file.isPublic && !user._id.equals(file.owner))
+      throw new NError("Khong co quyen truy cap file", 403);
     let filePath = path.join(rootPath, file.path, file.filename);
-    jimp.read(filePath).then(image => {
-      console.log("getImage", image);
-      let thumbpath = path.join(rootPath, "upload/tmp/" + file.filename);
-      if (req.query.size) {
-        let size = req.query.size.split("x");
-        let w = Number(size[0]);
-        let h = Number(size[1]);
-        image.resize(jimp.AUTO, h).crop((image.getWidth() - w) / 2, (image.getHeight() - h) / 2, w, h);
-      }
-      image.write(thumbpath, () => {
-        console.log(thumbpath);
-        return res.sendFile(thumbpath);
-      });
-    }).catch(err => {
-      return res.sendFile(path.join(rootPath, 'upload/no-image.jpg'));
-    })
+    if (req.query.size) {
+      let size = req.query.size.split("x");
+      let w = Number(size[0]);
+      let h = Number(size[1]);
+      jimp
+        .read(filePath)
+        .then(image => {
+          if (req.query.size) {
+            image
+              .resize(jimp.AUTO, h)
+              .crop(
+                (image.getWidth() - w) / 2,
+                (image.getHeight() - h) / 2,
+                w,
+                h
+              )
+              .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
+                res.set("Content-Type", jimp.MIME_JPEG);
+                res.send(buffer);
+              });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          return res.sendFile(path.join(rootPath, "upload/no-image.jpg"));
+        });
+    } else {
+      return res.sendFile(filePath);
+    }
   } catch (error) {
     return res.status(error.code).send(error.message);
   }
