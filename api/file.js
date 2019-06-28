@@ -52,14 +52,14 @@ async function getFile(req, res) {
           if (req.query.size) {
             let left = (image.getWidth() - w) / 2;
             let top = (image.getHeight() - h) / 2;
-            return res.send("buffer");
+            // return res.send("buffer");
             image
               .resize(jimp.AUTO, h)
               .crop(left, top, w, h)
-              .li.quality(50)
+              .quality(50)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
-                return res.send("buffer");
+                return res.send(buffer);
               });
           }
         })
