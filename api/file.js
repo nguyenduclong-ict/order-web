@@ -45,6 +45,7 @@ async function getFile(req, res) {
       let size = req.query.size.split("x");
       let w = Number(size[0]);
       let h = Number(size[1]);
+      console.log(w,h);
       jimp
         .read(filePath)
         .then(image => {
@@ -54,6 +55,8 @@ async function getFile(req, res) {
             image
               .resize(jimp.AUTO, h)
               .crop(left, top, w, h)
+              .li
+              .quality(50)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
                 res.send(buffer);
