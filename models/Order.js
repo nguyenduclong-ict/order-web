@@ -118,10 +118,10 @@ async function changeOrderStatus(id, newStatus, comment) {
  * @param {*} providerId
  * @param {*} comment
  */
-async function acceptOrder(id, productId, comment) {
+async function acceptOrder(id, providerId, comment) {
     let order = await Order.findOne({
         _id: id,
-        productId: productId,
+        providerId: providerId,
         status: orderStatus.pending
     });
     if (!order) throw new Error("Order Khong hop le");
