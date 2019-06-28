@@ -183,7 +183,6 @@ async function successOrder(id, customerId, providerId, comment) {
       customerId,
       status: orderStatus.delivery
     });
-    console.log(query, order);
     if (!order)
       rj({
         ok: 0,
