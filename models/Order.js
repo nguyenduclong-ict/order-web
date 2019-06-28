@@ -182,8 +182,8 @@ async function successOrder(id, customerId, providerId, comment) {
       { _id: id, customerId, providerId, status: orderStatus.delivery },
       [undefined]
     );
-    console.log(query);
     let order = await Order.findOne(query);
+    console.log(query,order);
     if (!order) throw new Error("Order Khong hop le");
     changeOrderStatus(id, orderStatus.success, comment).then(async doc => {
       console.log(doc);
