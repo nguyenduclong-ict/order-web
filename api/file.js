@@ -55,8 +55,8 @@ async function getFile(req, res) {
           console.log(left,top,w, h);
             image
               .resize(jimp.AUTO, h)
-              .crop(left, top, w, h)
-              .quality(50)
+              // .crop(left, top, w, h)
+              // .quality(50)
               return res.send('ddd');
               // .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
               //   res.set("Content-Type", jimp.MIME_JPEG);
