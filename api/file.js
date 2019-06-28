@@ -59,7 +59,7 @@ async function getFile(req, res) {
               .quality(50)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
-                res.send(buffer);
+                res.send('buffer');
               });
           }
         })
