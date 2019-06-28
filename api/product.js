@@ -11,12 +11,9 @@ router.get("/detail/:id", getDetail);
 
 async function getListProduct(req, res) {
   let { from, page, category, provider, name, sort, ids } = req.query;
-  if (name === "") name = undefined;
-  if (!category) category = category;
-  else if (!Array.isArray(category)) category = [category];
-
   sort = sort ? JSON.parse(sort) : { _id: 1 };
-  console.log(sort);
+  console.log(category);
+  if (category && !Array.isArray(category)) category = [category];
   Product.methods
     .getList(provider, category, name, true, from, page, sort, ids)
     .then(list => {

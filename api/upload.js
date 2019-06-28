@@ -18,12 +18,21 @@ var storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     console.log("router /upload Line 20", file, Array.isArray(file));
-    if (!MIME_TYPE_MAP[file.mimetype]) return cb(Error("Định dạng file không được hỗ trợ"), null);
+    if (!MIME_TYPE_MAP[file.mimetype])
+      return cb(Error("Định dạng file không được hỗ trợ"), null);
     else {
       let r = Math.random()
         .toString(36)
         .substring(2);
-      cb(null, file.fieldname + "-" + Date.now() + r + "." + MIME_TYPE_MAP[file.mimetype]);
+      cb(
+        null,
+        file.fieldname +
+          "-" +
+          Date.now() +
+          r +
+          "." +
+          MIME_TYPE_MAP[file.mimetype]
+      );
     }
   }
 });
@@ -69,6 +78,8 @@ async function uploadFile(req, res) {
 
 // Upload multiple file
 async function uploadFiles(req, res) {
+console.log("upload Path " + uploadPath);
+
   let promise = [];
   console.log(req.files);
   console.log(req.body.subOwner, req.body.tags);
@@ -102,14 +113,24 @@ async function uploadFiles(req, res) {
 
 async function updateMultipleFile(req, res) {
   try {
-    if (req.user.type !== "provider") throw new Error("Chỉ Provider mới có quyền chỉnh sửa sản phẩm", 403);
+    if (req.user.type !== "provider")
+      throw new Error("Chỉ Provider mới có quyền chỉnh sửa sản phẩm", 403);
     let owner = req.user._id;
     let { tags, isPublic, subOwner, filename } = req.body;
 
-    console.log("Router file line 73", filename, owner, subOwner, isPublic, tags);
-    File.methods.updateMultilple(filename, owner, subOwner, isPublic, tags).then(result => {
-      return res.json(result);
-    });
+    console.log(
+      "Router file line 73",
+      filename,
+      owner,
+      subOwner,
+      isPublic,
+      tags
+    );
+    File.methods
+      .updateMultilple(filename, owner, subOwner, isPublic, tags)
+      .then(result => {
+        return res.json(result);
+      });
   } catch (error) {
     console.log(error);
     res.status(error.code || 500).send(error.message);

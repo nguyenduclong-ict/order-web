@@ -51,7 +51,16 @@ var Product = {};
 Product = mongoose.model("Product", schema);
 Product.methods = {};
 
-Product.methods.getList = async (providerId, categoryId = [], name, isShow, from, page, sort, ids) => {
+Product.methods.getList = async (
+  providerId,
+  categoryId = [],
+  name,
+  isShow,
+  from,
+  page,
+  sort,
+  ids
+) => {
   // console.log(providerId, categoryId, name, isShow, from, page, sort, ids);
   query = validate.validateRemove({ providerId, name, isShow }, [undefined]);
   if (providerId) providerId = mongoose.Types.ObjectId(providerId);
@@ -63,11 +72,13 @@ Product.methods.getList = async (providerId, categoryId = [], name, isShow, from
     query._id = { $in: ids };
   }
   // Dieu kien tim kiếm theo category
+  
   console.log(categoryId);
   if (categoryId.length > 0) {
+    console.log("query ", query);
+    categoryId = categoryId.map(e => mongoose.Types.ObjectId(e));
     let arr = await Category.find({ parentId: { $in: categoryId } });
-    arr = arr.map(e => mongoose.Types.ObjectId(e._id.toString()));
-    categoryId.map(e => mongoose.Types.ObjectId(e.toString()));
+    arr = arr.map(e => mongoose.Types.ObjectId(e.parentId));
     arr = [...arr, ...categoryId];
     query.categoryId = {
       $in: arr
@@ -76,7 +87,6 @@ Product.methods.getList = async (providerId, categoryId = [], name, isShow, from
   from = Number(from) || 0;
   page = Number(page) || 9999;
 
-  console.log("query ", query);
   let list = await Product.aggregate([
     { $match: query },
     {
@@ -104,7 +114,7 @@ Product.methods.getList = async (providerId, categoryId = [], name, isShow, from
       }
     },
     { $skip: from },
-    { $limit: page },
+    { $limit: page }
     // { $sort: sort }
   ]);
 
@@ -123,11 +133,18 @@ Product.methods.getListByName = name => {
 };
 
 async function reduceQuantity(ids, values) {
-  return Promise.all(ids.map((id, index) => Product.updateOne({ _id: id }, { $inc: { quantity: -values[index] } })));
+  return Promise.all(
+    ids.map((id, index) =>
+      Product.updateOne({ _id: id }, { $inc: { quantity: -values[index] } })
+    )
+  );
 }
 
 async function getDetail(id, provider = undefined, isShow = true) {
-  let query = validate.validateRemove({ _id: id, isShow, providerId: provider }, [undefined]);
+  let query = validate.validateRemove(
+    { _id: id, isShow, providerId: provider },
+    [undefined]
+  );
   let product = await Product.findOne(query)
     .populate("providerId")
     .populate("categoryId")
