@@ -94,7 +94,7 @@ async function postAddOrder(req, res) {
     })
     .catch(err => {
       console.log(err);
-      return res.status(500).send({ ok: 0, message: "Add Order Success" });
+      return res.status(500).send({ ok: 0, message: "Add Order Fail" });
     });
 }
 
