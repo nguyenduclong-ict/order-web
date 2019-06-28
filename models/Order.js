@@ -15,6 +15,11 @@ const orderStatus = {
 var schema = new Schema({
   orderDetails: [{ type: Schema.Types.ObjectId, ref: "OrderDetail" }],
   totalPay: Number,
+  deliveryInfo: {
+    name: String,
+    address: String,
+    phone: String
+  },
   preStatus: [
     {
       code: {
@@ -214,7 +219,8 @@ async function addOrder(
   providerId,
   customerId,
   paymentId,
-  discountId
+  discountId,
+  deliveryInfo
 ) {
   let product = await Product.find({
     _id: productId,
@@ -235,7 +241,8 @@ async function addOrder(
     totalPay: od.total,
     customerId,
     providerId,
-    paymentId
+    paymentId,
+    deliveryInfo
   };
   let order = new Order(data);
   return order.save();

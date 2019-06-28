@@ -61,16 +61,34 @@ async function putChangeOrderQuantity(req, res) {
  * 5 Xoá đơn hàng khỏi giỏ hàng
  */
 async function postAddOrder(req, res) {
-  let { productId, paymentId, discountId, quantity, providerId } = req.body;
+  let {
+    productId,
+    paymentId,
+    discountId,
+    quantity,
+    providerId,
+    name,
+    address,
+    phone
+  } = req.body;
   let userId = req.user._id;
   if (discountId === "") discountId = undefined;
-  if (!req.user.info.name || !req.user.info.address || !req.user.info.phone)
+  if (!(name && address && phone))
     return res.json({
       ok: 0,
       message: "Vui lòng nhập đầy đủ thông tin cá nhân để đặt hàng"
     });
+  let deliveryInfo = { name, address, phone };
   Order.methods
-    .addOrder(productId, quantity, providerId, userId, paymentId, discountId)
+    .addOrder(
+      productId,
+      quantity,
+      providerId,
+      userId,
+      paymentId,
+      discountId,
+      deliveryInfo
+    )
     .then(() => {
       return res.json({ ok: 1, message: "Add order success" });
     })
@@ -137,6 +155,5 @@ async function putSuccessOrder(req, res) {
       return res.send(err);
     });
 }
-
 
 module.exports = router;
