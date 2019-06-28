@@ -45,22 +45,21 @@ async function getFile(req, res) {
       let size = req.query.size.split("x");
       let w = Number(size[0]);
       let h = Number(size[1]);
-      console.log(w,h);
-      return res.send('buffer');
+      console.log(w, h);
       jimp
         .read(filePath)
         .then(image => {
           if (req.query.size) {
             let left = (image.getWidth() - w) / 2;
             let top = (image.getHeight() - h) / 2;
+            return res.send("buffer");
             image
               .resize(jimp.AUTO, h)
               .crop(left, top, w, h)
-              .li
-              .quality(50)
+              .li.quality(50)
               .getBuffer(jimp.MIME_JPEG, (err, buffer) => {
                 res.set("Content-Type", jimp.MIME_JPEG);
-                return res.send('buffer');
+                return res.send("buffer");
               });
           }
         })
