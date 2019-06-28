@@ -178,13 +178,18 @@ async function deliveryOder(id, providerId, comment) {
 
 async function successOrder(id, customerId, providerId, comment) {
   return new Promise(async (rs, rj) => {
-    let query = validator.validateRemove(
-      { _id: id, customerId, providerId, status: orderStatus.delivery },
-      [undefined]
-    );
-    let order = await Order.findOne(query);
-    console.log(query,order);
-    if (!order) throw new Error("Order Khong hop le");
+    let order = await Order.findOne({
+      _id: id,
+      customerId,
+      status: orderStatus.delivery
+    });
+    console.log(query, order);
+    if (!order)
+      rj({
+        ok: 0,
+        message:
+          "Đơn hàng không hợp lệ, chỉ có thể xác nhận đơn hàng đang ở trạng thái đang giao hàng"
+      });
     changeOrderStatus(id, orderStatus.success, comment).then(async doc => {
       console.log(doc);
       if (doc) {
