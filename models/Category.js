@@ -56,6 +56,7 @@ async function getList(parentId, from = 0, page = 1000, isShow) {
   let query = {};
   if (isShow) query.isShow = isShow;
   if (parentId) query.parentId = parentId;
+  if (parentId === "root") parentId = null;
   let result = Category.find(query);
   result.skip(Number(from));
   result.limit(Number(page));
